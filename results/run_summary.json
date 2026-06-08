@@ -1,0 +1,28 @@
+{
+  "mode": "full",
+  "ns": [
+    1,
+    2,
+    4,
+    8,
+    16,
+    32,
+    64
+  ],
+  "seeds": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+  ],
+  "n_seed_rows": 1680,
+  "n_main_rows": 210,
+  "deployment_gate": "allow_high_n_with_combined_repair",
+  "exact_law_mean_absolute_error": 0.006774488690388437,
+  "passes_claim_audit": true,
+  "runtime_seconds": 249.818
+}
