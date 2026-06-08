@@ -10,11 +10,14 @@ Paper-readiness judgment: paper-worthy v1 for controlled synthetic graph-physics
 - bash scripts/run_all.sh: pass (runtime 249.818s, gate allow_high_n_with_combined_repair)
 - bash scripts/run_claim_audit.sh: pass
 - pytest: pass (5 tests passed in 16.24s)
+- git push -u origin main: pass (new branch main pushed and tracking set)
 
 ## Publication
 - Local repository: initialized on branch main.
 - Origin: https://github.com/Jason-Wang313/best-of-n-graph-world-model.git.
-- Push result: pending at pre-commit audit time.
+- Initial published commit: 6e602c2761be9887d2625926cbdb616c6a126168.
+- Push result: pass; origin/main pointed at 6e602c2761be9887d2625926cbdb616c6a126168 after `git push -u origin main`.
+- Post-push audit update: this file records the publication result after the initial push.
 
 ## Strongest Artifacts
 - Failure artifact: figure1_selected_tail_failure.png and raw high-N rows in main_metrics.csv.
