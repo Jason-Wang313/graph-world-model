@@ -5,6 +5,14 @@ Paper-readiness judgment: hardened CPU-synthetic paper package. Within the state
 ## Command Results
 - experiments --mode bulletproof: pass (runtime 1343.253s, gate allow_high_n_with_adaptive_gate)
 - bash scripts/run_claim_audit.sh: pass
+- pytest: pass (9 tests passed in 41.29s)
+
+## Publication
+- Local branch: main.
+- Origin: https://github.com/Jason-Wang313/best-of-n-graph-world-model.git.
+- Ideal-result reporting commit: 0a1688de50fd4cdf620a8774b6306a02cd5cb047.
+- Push result: pass; origin/main pointed at 0a1688de50fd4cdf620a8774b6306a02cd5cb047 after `git push`.
+- Post-push audit update: this file records the publication result after the ideal-result reporting pass.
 
 ## Strongest Artifacts
 - Failure artifact: figure1_selected_tail_failure.png plus stress_metrics.csv across graph families, hidden failures, and stress levels.
