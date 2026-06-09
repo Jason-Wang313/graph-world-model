@@ -4,37 +4,37 @@
       "id": "C1",
       "claim": "Exact finite tie-aware Best-of-N laws predict selected utility on finite graph-physics candidate pools.",
       "status": "supported",
-      "evidence": "exact_law_validation.csv, figure3_exact_law_validation.png, and theory tests"
+      "evidence": "src/graph_physics_best_of_n/theory.py, tests/test_theory.py, results/tables/exact_law_validation.csv, and figures/figure3_exact_law_validation.png"
     },
     {
       "id": "C2",
       "claim": "In controlled graph-physics worlds, high-N raw selection can increase internal score while selected real utility stagnates or leaves oracle utility on the table.",
       "status": "supported",
-      "evidence": "stress_metrics.csv, figure1_selected_tail_failure.png, and figure4_stress_heatmap.png"
+      "evidence": "results/tables/stress_metrics.csv, results/tables/main_metrics.csv, figures/figure1_selected_tail_failure.png, figures/figure4_stress_heatmap.png, and figures/figure9_hidden_energy_by_n.png"
     },
     {
       "id": "C3",
       "claim": "Observed-energy, action, calibration-gap, constraint-probe, and combined-repair ablations explain which risk controls recover selected-tail utility.",
       "status": "supported",
-      "evidence": "ablation_metrics.csv, statistical_tests.csv, and figure5_ablation_components.png"
+      "evidence": "src/graph_physics_best_of_n/selection.py, results/tables/ablation_metrics.csv, results/tables/repair_metrics.csv, results/tables/statistical_tests.csv, figures/figure5_ablation_components.png, and figures/figure8_oracle_gap_closure.png"
     },
     {
       "id": "C4",
       "claim": "A pilot-label adaptive-N gate improves high-N selection in the controlled synthetic stress suite by blocking risky raw selection.",
       "status": "supported",
-      "evidence": "adaptive_gate_metrics.csv, statistical_tests.csv, and figure6_adaptive_gate.png"
+      "evidence": "results/tables/adaptive_gate_metrics.csv, results/tables/statistical_tests.csv, and figures/figure6_adaptive_gate.png"
     },
     {
       "id": "C5",
       "claim": "A CPU NumPy learned-lite calibrator improves rank alignment between candidate scores and real utility on held-out synthetic graph conditions.",
       "status": "supported",
-      "evidence": "learned_model_metrics.csv, learned_model_predictions.csv, and figure7_learned_model.png"
+      "evidence": "src/graph_physics_best_of_n/learned_model.py, results/tables/learned_model_metrics.csv, results/tables/learned_model_predictions.csv, and figures/figure7_learned_model.png"
     },
     {
       "id": "C6",
       "claim": "The evidence spans multiple graph families, hidden-failure modes, and stress levels inside a CPU-local synthetic benchmark.",
       "status": "supported",
-      "evidence": "stress_metrics.csv, figure10_family_robustness.png, and run_summary.json"
+      "evidence": "src/graph_physics_best_of_n/graph_physics.py, results/tables/stress_metrics.csv, figures/figure10_family_robustness.png, and results/run_summary.json"
     },
     {
       "id": "C7",
@@ -47,6 +47,18 @@
       "claim": "The method establishes broad benchmark superiority or state-of-the-art physics-model performance.",
       "status": "unsupported",
       "evidence": "no broad external benchmark suite is present"
+    },
+    {
+      "id": "C9",
+      "claim": "Increasing N universally improves selected real utility.",
+      "status": "unsupported",
+      "evidence": "the repository studies selected-tail risk, not a universal monotonic-improvement claim"
+    },
+    {
+      "id": "C10",
+      "claim": "The adaptive gate proves deployment safety beyond the controlled synthetic setting.",
+      "status": "unsupported",
+      "evidence": "the adaptive gate is explicitly pilot-label and synthetic"
     }
   ],
   "forbidden_supported_overclaims": [],

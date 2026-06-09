@@ -408,12 +408,104 @@ def _run_condition(
 
 def _write_claim_evidence_map(root: Path) -> None:
     payload = {
-        "C1_exact_finite_law": ["results/tables/exact_law_validation.csv", "figures/figure3_exact_law_validation.png", "tests/test_theory.py"],
-        "C2_selected_tail_failure": ["results/tables/stress_metrics.csv", "figures/figure1_selected_tail_failure.png", "figures/figure4_stress_heatmap.png"],
-        "C3_repairs_and_ablation": ["results/tables/ablation_metrics.csv", "figures/figure5_ablation_components.png"],
-        "C4_adaptive_gate": ["results/tables/adaptive_gate_metrics.csv", "figures/figure6_adaptive_gate.png"],
-        "C5_learned_lite_calibration": ["results/tables/learned_model_metrics.csv", "figures/figure7_learned_model.png"],
-        "C6_scope_limits": ["docs/claims.md", "paper/paper.md", "docs/final_audit.md"],
+        "claims": [
+            {
+                "id": "C1_exact_finite_law",
+                "status": "supported",
+                "claim": "Exact finite tie-aware Best-of-N laws predict selected utility for finite graph-physics candidate pools.",
+                "evidence": [
+                    "src/graph_physics_best_of_n/theory.py",
+                    "tests/test_theory.py",
+                    "results/tables/exact_law_validation.csv",
+                    "figures/figure3_exact_law_validation.png",
+                ],
+            },
+            {
+                "id": "C2_selected_tail_failure",
+                "status": "supported",
+                "claim": "Controlled graph-physics high-N selection can expose selected-tail failures.",
+                "evidence": [
+                    "results/tables/stress_metrics.csv",
+                    "results/tables/main_metrics.csv",
+                    "figures/figure1_selected_tail_failure.png",
+                    "figures/figure4_stress_heatmap.png",
+                    "figures/figure9_hidden_energy_by_n.png",
+                ],
+            },
+            {
+                "id": "C3_repairs_and_ablation",
+                "status": "supported",
+                "claim": "Repair components and combined repair improve selected-tail behavior in the synthetic stress suite.",
+                "evidence": [
+                    "src/graph_physics_best_of_n/selection.py",
+                    "results/tables/ablation_metrics.csv",
+                    "results/tables/repair_metrics.csv",
+                    "results/tables/statistical_tests.csv",
+                    "figures/figure5_ablation_components.png",
+                    "figures/figure8_oracle_gap_closure.png",
+                ],
+            },
+            {
+                "id": "C4_adaptive_gate",
+                "status": "supported",
+                "claim": "A pilot-label adaptive gate improves high-N selection in the controlled synthetic stress suite.",
+                "evidence": [
+                    "results/tables/adaptive_gate_metrics.csv",
+                    "results/tables/statistical_tests.csv",
+                    "figures/figure6_adaptive_gate.png",
+                ],
+                "caveat": "Pilot-label synthetic evidence only; not an online deployment guarantee.",
+            },
+            {
+                "id": "C5_learned_lite_calibration",
+                "status": "supported",
+                "claim": "A CPU NumPy learned-lite calibrator improves held-out rank alignment in synthetic graph conditions.",
+                "evidence": [
+                    "src/graph_physics_best_of_n/learned_model.py",
+                    "results/tables/learned_model_metrics.csv",
+                    "results/tables/learned_model_predictions.csv",
+                    "figures/figure7_learned_model.png",
+                ],
+                "caveat": "Lightweight synthetic calibration evidence only; not a large learned-simulator claim.",
+            },
+            {
+                "id": "C6_synthetic_coverage",
+                "status": "supported",
+                "claim": "The evidence spans multiple graph families, hidden-failure modes, and stress levels inside a CPU-local synthetic benchmark.",
+                "evidence": [
+                    "src/graph_physics_best_of_n/graph_physics.py",
+                    "results/tables/stress_metrics.csv",
+                    "figures/figure10_family_robustness.png",
+                    "results/run_summary.json",
+                ],
+            },
+            {
+                "id": "C7_real_system_validation",
+                "status": "unsupported",
+                "claim": "The method is validated on real robot systems.",
+                "evidence": ["No real-robot experiment artifact is present."],
+            },
+            {
+                "id": "C8_broad_external_benchmark_superiority",
+                "status": "unsupported",
+                "claim": "The method establishes broad external benchmark superiority or state-of-the-art physics-model performance.",
+                "evidence": ["No broad external benchmark suite is present."],
+            },
+            {
+                "id": "C9_universal_high_n_improvement",
+                "status": "unsupported",
+                "claim": "Increasing N universally improves selected real utility.",
+                "evidence": ["The repository studies selected-tail risk, not a universal monotonic-improvement claim."],
+            },
+            {
+                "id": "C10_deployment_safety",
+                "status": "unsupported",
+                "claim": "The adaptive gate proves deployment safety beyond the controlled synthetic setting.",
+                "evidence": ["The adaptive gate is explicitly pilot-label and synthetic."],
+            },
+        ],
+        "manuscript": "paper/paper.md",
+        "audit": ["docs/claims.md", "results/claims_status.md", "docs/final_audit.md"],
     }
     (root / "results" / "claim_evidence_map.json").write_text(json.dumps(payload, indent=2), encoding="utf-8")
 

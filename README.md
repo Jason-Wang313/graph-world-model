@@ -1,8 +1,8 @@
 # When Graph Worlds Overfit Their Own Physics
 
-This repository studies **Best-of-N inference for graph-structured physics world models**. A model proposes future trajectories on a mass-spring graph, scores each imagined future with an internal graph-physics score, and executes the highest-scoring candidate. Real utility is evaluated by a separate simulator that includes hidden constraints, shifted rest lengths, topology aliasing, delayed damping, and long-horizon drift.
+This repository is a submission-oriented evidence package for **Best-of-N inference in graph-structured physics world models**. A model proposes future trajectories on a mass-spring graph, scores each imagined future with an internal graph-physics score, and executes the highest-scoring candidate. Real utility is evaluated by a separate simulator that includes hidden constraints, shifted rest lengths, topology aliasing, delayed damping, and long-horizon drift.
 
-The central result is intentionally strict: in controlled CPU-local graph-physics settings, increasing `N` can improve selected internal score while leaving real utility below the oracle tail because the high-score tail exploits constraints the imagined graph does not faithfully represent. The repo then tests risk controls: graph-energy penalties, action penalties, calibration-gap penalties, constraint probes, combined repair, pilot-label adaptive gating, and a learned-lite NumPy calibrator.
+The central result is intentionally strict: in controlled CPU-local graph-physics settings, increasing `N` can improve selected internal score while leaving real utility below the oracle tail because the high-score tail exploits constraints the imagined graph does not faithfully represent. The repo then tests risk controls: graph-energy penalties, action penalties, calibration-gap penalties, constraint probes, combined repair, pilot-label adaptive gating, and a learned-lite NumPy calibrator. Every supported manuscript claim is mapped to concrete CSVs, figures, tests, or audit artifacts.
 
 ## Quickstart
 
@@ -25,15 +25,21 @@ pytest
 
 ## Main Artifacts
 
-- `paper/paper.md`: full paper draft with theorem, experiments, ablations, limitations, and reproducibility checklist.
+- `paper/paper.md`: submission-style manuscript with title, abstract, related-work positioning, formal setup, theorem, methods, experiments, results, limitations, reproducibility checklist, and appendices.
 - `results/tables/stress_metrics.csv`: high-N behavior across graph families, hidden failures, and stress levels.
 - `results/tables/ablation_metrics.csv`: repair-component and combined-repair evidence.
 - `results/tables/adaptive_gate_metrics.csv`: adaptive-N gate decisions and selected utilities.
 - `results/tables/learned_model_metrics.csv`: held-out learned-lite calibration evidence.
 - `results/tables/statistical_tests.csv`: paired deltas, bootstrap CIs, and effect sizes.
-- `results/claim_evidence_map.json`: supported claims mapped to concrete evidence artifacts.
+- `results/claim_evidence_map.json`: supported and explicitly unsupported claims mapped to evidence artifacts or absence-of-evidence notes.
 - `figures/figure1_selected_tail_failure.png` through `figures/figure10_family_robustness.png`: the main figure suite.
 - `docs/final_audit.md`: final validation, artifact inventory, remaining limits, commit, and publication audit.
+
+## Claim Discipline
+
+- Supported: finite tie-aware law, selected-tail failure in synthetic graph physics, repair/gate improvements inside the stress suite, learned-lite held-out calibration, and multi-family synthetic coverage.
+- Unsupported: real-robot validation, broad external benchmark superiority, state-of-the-art performance, universal improvement from increasing `N`, and deployment safety beyond the controlled synthetic setting.
+- Audit: `bash scripts/run_claim_audit.sh` regenerates claim status and fails on missing required artifacts or forbidden supported overclaims.
 
 ## Headline Bulletproof Results
 
