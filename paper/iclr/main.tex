@@ -1,0 +1,235 @@
+\documentclass{article}
+\usepackage{iclr2026_conference,times}
+
+\input{math_commands.tex}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{url}
+\usepackage{hyperref}
+
+\newtheorem{theorem}{Theorem}
+\newcommand{\bestn}{Best-of-$N$}
+\newcommand{\utility}{U}
+\newcommand{\score}{S}
+\newcommand{\selected}{\mathrm{sel}}
+
+\title{When Graph Worlds Overfit Their Own Physics}
+
+\author{Anonymous Authors}
+
+% \iclrfinalcopy
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+\bestn{} inference is tail selection under a model score: sample $N$ candidate futures, score each one, and execute the highest-scoring candidate.  If the score omits constraints that matter under execution, larger $N$ can concentrate selection on candidates that are good only inside the model's imagined physics.  We study this failure mode in a CPU-local synthetic graph-physics suite where an imagined mass-spring graph scores rollouts and a separate true graph evaluates utility.  We prove an exact finite-pool, tie-aware law for the expected utility selected by \bestn{}, validate it empirically with mean absolute error $0.001341$, and audit graph-energy, action, calibration-gap, constraint-probe, combined-repair, adaptive-gating, and learned-lite calibration controls.  At $N=64$, adaptive gating improves selected real utility over raw selection by $0.00701$ on 320 paired cases and by $0.01447$ on 155 hard cases, with zero negative deltas in this audit.  The evidence is deliberately narrow: synthetic graph physics only, no real-robot validation, no external simulator benchmark, and no claim that larger $N$ universally improves deployed behavior.
+\end{abstract}
+
+\section{Introduction}
+
+Increasing $N$ in a \bestn{} controller is often described as ``more search.''  A more precise description is tail selection under a score.  The controller samples $N$ futures, evaluates each with an internal score, and chooses the maximum.  If the high-score tail is also high-utility, increasing $N$ can help.  If the score is misspecified in the tail, increasing $N$ can make the selected future more extreme along precisely the dimensions the score fails to penalize.
+
+Graph-structured world models make this question concrete.  A graph simulator can encode object relations, springs, contacts, or inferred interactions, but the graph used for imagination can omit edges, shift rest lengths, alias topology, understate damping, or drift over horizon.  Then the model score may improve because a trajectory exploits the imagined graph, while the executed utility remains below the oracle tail under the true graph.
+
+This paper makes a narrow claim.  In controlled CPU-local synthetic graph physics, raw high-$N$ selection exposes a measurable score/utility tail mismatch, and simple auditable repairs reduce that mismatch in the same suite.  We do not claim real-robot validation, broad benchmark superiority, state-of-the-art physics modeling, or deployment safety.  The contribution is an inspectable stress test and claim audit for a particular failure mechanism.
+
+The paper contributes: (1) an exact finite-pool law for tie-aware \bestn{} selection; (2) a graph-physics stress suite over five graph families, five hidden failures, and three stress levels; (3) selector, repair, adaptive-gate, and learned-lite calibration audits tied to CSV artifacts; and (4) an explicit limitation and reproducibility record.
+
+\section{Related Work}
+
+\bestn{} and reranking are common inference-time tools.  Reward-model or verifier-based selection appears in summarization, mathematical reasoning, web-assisted question answering, and instruction following \citep{stiennon2020learning,cobbe2021training,nakano2021webgpt,ouyang2022training}.  Our focus is not language generation, but the same order-statistic pressure: the selected sample is an extreme under a learned or specified score \citep{david2003order}.
+
+World models and model-based control use learned dynamics for imagination, planning, and policy improvement \citep{ha2018recurrent,hafner2019planet,hafner2020dreamer}.  Graph and object-centric dynamics models represent interacting systems with relational structure \citep{battaglia2016interaction,kipf2018neural,sanchezgonzalez2020learning}.  This work does not propose a new graph simulator.  It asks what happens when selection is optimized against a graph score whose constraints are deliberately incomplete.
+
+Calibration and robustness work studies whether model-facing scores remain meaningful under shift \citep{guo2017calibration,ovadia2019trust}.  Reproducibility work in RL and machine learning argues for paired comparisons, transparent reporting, and artifact-backed claims \citep{henderson2018deep,pineau2021improving}.  We follow that spirit by keeping the evidence synthetic but fully auditable.
+
+\section{Formal Setup}
+
+Let a finite pool contain $m$ candidates.  Candidate $i$ has model score $\score_i$ and evaluator utility $\utility_i$.  \bestn{} draws $N$ candidates independently with replacement from the pool and selects a sampled candidate with maximal score.  If several sampled positions tie for maximal score, the selector breaks ties uniformly among tied sampled positions.
+
+\begin{theorem}[finite tie-aware \bestn{} law]
+\label{thm:law}
+Partition the pool into exact score-tie groups $g$, ordered from highest score to lowest score.  Let $k_g$ be the number of candidates in group $g$, let $b_g$ be the number of candidates with lower score than group $g$, and let $\bar{\utility}_g$ be the mean utility in group $g$.  Then
+\begin{equation}
+\mathbb{E}[\utility_{\selected}]
+= \sum_g \left[
+\left(\frac{k_g+b_g}{m}\right)^N
+-
+\left(\frac{b_g}{m}\right)^N
+\right]\bar{\utility}_g .
+\end{equation}
+\end{theorem}
+
+The theorem is independent of graph physics.  It says that \bestn{} shifts probability mass toward score-tie groups in the score tail.  If those groups have lower mean evaluator utility, larger $N$ can hurt utility or leave an oracle gap even as selected score rises.  In the artifact, the theorem is implemented in \texttt{src/graph\_physics\_best\_of\_n/theory.py}, tested in \texttt{tests/test\_theory.py}, and validated in \texttt{results/tables/exact\_law\_validation.csv}.
+
+\section{Graph-Physics Stress Suite}
+
+We instantiate the law in small seeded mass-spring graph worlds.  Each candidate action sequence is rolled out under an imagined graph and a true graph.  The imagined graph supplies the selection score.  The true graph supplies the utility audit.  The final run contains $N\in\{1,2,4,8,16,32,64\}$, seeds $0$--$3$, five primary scenarios, 75 stress conditions, 80 total conditions, 22,400 seed-level selector rows, and 5,600 aggregate rows.
+
+The stress grid uses graph families \texttt{ring\_chord}, \texttt{chain}, \texttt{grid}, \texttt{random\_geometric}, and \texttt{clustered}; hidden failures \texttt{omitted\_edges}, \texttt{shifted\_rest\_lengths}, \texttt{delayed\_damping}, \texttt{topology\_aliasing}, and \texttt{long\_horizon\_drift}; and stress levels \texttt{mild}, \texttt{medium}, and \texttt{severe}.  These are hand-coded synthetic conditions, not external physics-engine or robot benchmarks.
+
+The internal score is
+\begin{equation}
+\score =
+-e_{\mathrm{imag}}
+-0.055 E_{\mathrm{obs}}^{\mathrm{imag}}
+B_{\mathrm{shortcut}},
+\end{equation}
+where $e_{\mathrm{imag}}$ is imagined target error, $E_{\mathrm{obs}}^{\mathrm{imag}}$ is imagined observed-edge energy, and $B_{\mathrm{shortcut}}$ is an explicit shortcut bonus.  The true utility is
+\begin{equation}
+\utility =
+-e_{\mathrm{true}}
+-(0.48+0.11\lambda)E_{\mathrm{hidden}}
+-0.15E_{\mathrm{obs}}^{\mathrm{true}}
+-0.040\|a\|
+-0.09\max(0,e_{\mathrm{true}}-e_{\mathrm{imag}}),
+\end{equation}
+where $\lambda$ is the coded stress scalar.  This constructed mismatch is the benchmark object.  It should not be read as a real-world reward.
+
+\section{Selectors, Repair, and Gate}
+
+Raw selection maximizes $\score$.  Oracle selection maximizes $\utility$ and is used only as an analysis upper bound.  Random selection provides a gap-closure baseline.  The repair suite subtracts fixed penalties from the raw score: observed-edge energy, action norm, positive calibration gap, graph-energy calibration, constraint-probe risk, and a combined repair score.  The combined repair is
+\begin{equation}
+\score -0.36 V_{\mathrm{edge}} -0.11\|a\|
+-0.24\max(0,\Delta_{\mathrm{cal}})
+-0.10E_{\mathrm{obs}},
+\end{equation}
+where $V_{\mathrm{edge}}$ is the benchmark edge-violation feature and $\Delta_{\mathrm{cal}}=e_{\mathrm{true}}-e_{\mathrm{imag}}$ in the generated table.
+
+The adaptive gate compares raw and combined-repair selections.  It blocks raw selection for $N\geq 8$ when the raw selected candidate crosses a risk threshold or pilot-label evidence shows repair gain.  Because the gate uses synthetic evaluator information to define repair gain, it is a pilot-label audit mechanism, not an online safety certificate.
+
+The learned-lite component trains NumPy ridge regressors for real utility and hidden energy from candidate features, including score, target errors, observed energy, action norm, calibration gap, graph size, edge counts, graph-family indicators, hidden-failure indicators, and stress indicators.  The learned-safe rule uses the learned candidate only when predicted utility margin is large and predicted hidden energy is not worse than raw by more than a small tolerance.
+
+\section{Experiments and Results}
+
+All headline values below are read from the current CSV/JSON artifacts, with no new experiments.  The paired statistical table uses the maximum sampled setting, $N=64$, for its \texttt{all\_high\_n} scope.
+
+\begin{table}[t]
+\caption{audit-backed headline metrics}
+\label{tab:headline}
+\begin{center}
+\small
+\begin{tabular}{@{}p{0.67\linewidth}r@{}}
+\toprule
+Metric & Value \\
+\midrule
+Final graph-physics conditions & 80 \\
+Seed-level selector rows & 22,400 \\
+Exact-law mean absolute validation error & 0.001341 \\
+$N=64$ adaptive gain over raw, all paired cases & 0.00701 \\
+95\% CI for all paired adaptive gain & [0.00529, 0.00893] \\
+$N=64$ adaptive gain over raw, hard cases & 0.01447 \\
+95\% CI for hard-case adaptive gain & [0.01119, 0.01812] \\
+Adaptive negative utility deltas vs. raw in audit & 0 \\
+Raw-score to learned-utility rank correlation & 0.756 to 0.932 \\
+Learned-safe hard-case oracle-gap closure & 0.588 \\
+\bottomrule
+\end{tabular}
+\end{center}
+\end{table}
+
+\begin{figure}[t]
+\begin{center}
+\includegraphics[width=0.96\linewidth]{../../figures/figure1_selected_tail_failure.png}
+\end{center}
+\caption{selected-tail failure in the synthetic suite.  Raw \bestn{} selection raises the internal score tail while true utility remains below the oracle tail in controlled graph-physics conditions.}
+\label{fig:tail}
+\end{figure}
+
+Figure~\ref{fig:tail} shows the central failure pattern: raw selected score improves with $N$, but the selected candidate can remain below the oracle under true utility.  The stress heatmap in Figure~\ref{fig:stress} shows that this is not a single-condition artifact; raw $N=64$ oracle regret appears across graph families and hidden failures.
+
+\begin{figure}[t]
+\begin{center}
+\includegraphics[width=0.92\linewidth]{../../figures/figure4_stress_heatmap.png}
+\end{center}
+\caption{raw $N=64$ oracle regret across graph families and hidden-failure modes in the stress suite.}
+\label{fig:stress}
+\end{figure}
+
+At $N=64$, combined repair improves selected real utility over raw by $0.00594$ on 320 paired cases, with 95\% CI $[0.00405,0.00794]$.  Adaptive gating improves selected real utility by $0.00701$, with 95\% CI $[0.00529,0.00893]$.  On the 155 hard cases where raw oracle regret exceeds $0.002$, adaptive gain is $0.01447$, with 95\% CI $[0.01119,0.01812]$.
+
+\begin{figure}[t]
+\begin{center}
+\begin{minipage}{0.48\linewidth}
+\includegraphics[width=\linewidth]{../../figures/figure6_adaptive_gate.png}
+\end{minipage}
+\hfill
+\begin{minipage}{0.48\linewidth}
+\includegraphics[width=\linewidth]{../../figures/figure8_oracle_gap_closure.png}
+\end{minipage}
+\end{center}
+\caption{adaptive gating and oracle-gap closure at high $N$ in the synthetic audit.  The gate reduces selected-tail mismatch in this suite, but remains a pilot-label synthetic mechanism.}
+\label{fig:repair}
+\end{figure}
+
+The learned-lite calibration result is similarly scoped.  On held-out synthetic rows, rank correlation with real utility improves from $0.75649$ for raw score to $0.93201$ for learned utility.  The mean selected utility changes from $-0.17121$ for raw to $-0.16337$ for learned-safe, compared with oracle $-0.16208$, and learned-safe closes $0.58777$ of the hard-case oracle gap.  This supports a calibration sanity-check claim, not a learned-world-model claim.
+
+\section{Limitations}
+
+The evidence is synthetic and CPU-local by design.  The graph families, hidden failures, rewards, repair coefficients, and gate thresholds are hand-coded.  This makes the mechanism inspectable, but it also limits external validity.
+
+The adaptive gate uses pilot-label style synthetic evaluator information.  It should not be read as an online deployment guarantee.  The learned-lite model sees synthetic condition labels and uses a small ridge calibrator; it is not evidence that a large neural simulator would solve tail-selection risk.  The next meaningful tier would require external physics benchmarks or real-system data, which is outside this artifact.
+
+\subsubsection*{Ethics statement}
+This work uses synthetic mass-spring simulations only.  It does not involve human subjects, private data, deployed robots, or safety-critical real-world control.  The main ethical risk is overstatement: presenting a synthetic selected-tail audit as deployment evidence.  The manuscript therefore marks real-robot validation, broad benchmark superiority, universal high-$N$ improvement, and deployment safety as unsupported claims.
+
+\subsubsection*{Reproducibility statement}
+The artifact package contains deterministic code, generated CSV tables, figures, tests, and a claim audit.  The theorem implementation, experiment generator, selectors, learned-lite calibrator, and audit live under \texttt{src/}, \texttt{experiments/}, \texttt{tests/}, \texttt{results/}, and \texttt{docs/}.  The expected validation commands are \texttt{bash scripts/build\_paper.sh}, \texttt{bash scripts/run\_claim\_audit.sh}, \texttt{pytest}, and \texttt{git diff --check}.  Re-running the full bulletproof experiment is possible but slow; this manuscript uses the existing CPU-local evidence artifacts only.
+
+\bibliography{references}
+\bibliographystyle{iclr2026_conference}
+
+\appendix
+
+\section{Proof of Theorem~\ref{thm:law}}
+
+For a score-tie group $g$, the event that $g$ supplies the selected candidate occurs exactly when all $N$ sampled candidates lie in group $g$ or a lower-scoring group, and at least one sampled candidate lies in $g$.  There are $k_g+b_g$ candidates in $g$ or below, so the first event has probability $((k_g+b_g)/m)^N$.  There are $b_g$ lower-scoring candidates, so the event that every sample is below $g$ has probability $(b_g/m)^N$.  Subtracting gives
+\[
+p_g = \left(\frac{k_g+b_g}{m}\right)^N - \left(\frac{b_g}{m}\right)^N .
+\]
+Conditional on this event, sampled positions from group $g$ are exchangeable, and the tie-breaking rule is uniform over tied maximal sampled positions.  The expected selected utility conditional on group $g$ is therefore the group mean $\bar{\utility}_g$.  Summing $p_g\bar{\utility}_g$ over score-tie groups proves the result.
+
+\section{Benchmark Details}
+
+The bulletproof run uses $N=\{1,2,4,8,16,32,64\}$, seeds $\{0,1,2,3\}$, 80 conditions, 22,400 seed-level selector rows, and 5,600 aggregate rows.  The 80 conditions are five primary scenarios plus the $5\times 5\times 3$ stress grid over graph families, hidden failures, and stress levels.  Candidate actions are sampled deterministically from seeded random generators.  The imagined rollout excludes hidden constraints; the true rollout includes them.
+
+The final run summary is \texttt{results/run\_summary.json}.  The primary aggregate table is \texttt{results/tables/main\_metrics.csv}.  Stress, repair, ablation, adaptive-gate, statistical-test, learned-lite, and exact-law artifacts are stored in the corresponding files under \texttt{results/tables/}.
+
+\section{Selector Formulas}
+
+The selector coefficients are fixed in \texttt{src/graph\_physics\_best\_of\_n/selection.py}.  The hidden-risk proxy is
+\[
+R_{\mathrm{hidden}} =
+V_{\mathrm{edge}} + 0.30\|a\| + 0.35\max(0,\Delta_{\mathrm{cal}}).
+\]
+The repair scores are:
+\[
+\begin{aligned}
+\score_{\mathrm{obs}} &= \score -0.52E_{\mathrm{obs}},\\
+\score_{\mathrm{act}} &= \score -0.16\|a\|,\\
+\score_{\mathrm{gap}} &= \score -0.32\max(0,\Delta_{\mathrm{cal}}),\\
+\score_{\mathrm{graph}} &= \score -0.34E_{\mathrm{obs}} -0.08\|a\|,\\
+\score_{\mathrm{probe}} &= \score -0.30R_{\mathrm{hidden}},\\
+\score_{\mathrm{combined}} &= \score -0.36V_{\mathrm{edge}} -0.11\|a\| -0.24\max(0,\Delta_{\mathrm{cal}}) -0.10E_{\mathrm{obs}}.
+\end{aligned}
+\]
+The adaptive gate blocks raw when $N\geq 8$ and either raw risk exceeds the 0.60 candidate-risk quantile plus 0.08 or the synthetic repair gain is positive.
+
+\section{Learned-Lite Calibration Details}
+
+The learned-lite component trains ridge regressors for real utility and hidden energy.  The generated train and test tables each contain 4,800 rows.  Candidate features include raw score, imagined target error, observed energy, action norm, calibration gap, graph size, edge counts, and one-hot indicators for graph family, hidden failure, and stress level.  The learned-safe selector uses the learned candidate only when predicted utility exceeds raw by more than 0.020 and predicted hidden energy is no more than 0.015 above raw predicted hidden energy.
+
+\section{Claim Audit}
+
+The supported claims are: the finite law predicts selected utility on finite candidate pools; raw high-$N$ selection can expose selected-tail failure in controlled graph physics; repair and adaptive gating improve selected-tail behavior in this suite; learned-lite calibration improves held-out rank alignment in synthetic graph conditions; and the evidence spans multiple graph families, hidden failures, and stress levels.  The explicitly unsupported claims are real-robot validation, broad external benchmark superiority, state-of-the-art physics-model performance, universal improvement from increasing $N$, and deployment safety beyond the controlled synthetic setting.  The machine-readable map is \texttt{results/claim\_evidence\_map.json}.
+
+\section{LLM Usage Statement}
+
+This draft manuscript was prepared with assistance from an LLM-based coding and writing agent under user direction.  The agent was instructed to restrict claims to existing repository artifacts, cite only verified references, and preserve the synthetic scope of the evidence.  Authors remain responsible for independently checking the manuscript, bibliography, generated PDF, and all submission metadata before any conference submission.
+
+\end{document}

@@ -9,3 +9,13 @@ build/
 dist/
 *.egg-info/
 
+# LaTeX build products.
+paper/iclr/*.aux
+paper/iclr/*.bbl
+paper/iclr/*.blg
+paper/iclr/*.fdb_latexmk
+paper/iclr/*.fls
+paper/iclr/*.log
+paper/iclr/*.out
+paper/iclr/*.pdf
+paper/iclr/*.synctex.gz

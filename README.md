@@ -25,7 +25,9 @@ pytest
 
 ## Main Artifacts
 
-- `paper/paper.md`: submission-style manuscript with title, abstract, related-work positioning, formal setup, theorem, methods, experiments, results, limitations, reproducibility checklist, and appendices.
+- `paper/iclr/main.tex`: primary ICLR-style LaTeX manuscript, using the official ICLR 2026 template files under `paper/iclr/`.
+- `paper/iclr/references.bib`: verified bibliography for the ICLR manuscript.
+- `paper/paper.md`: audit/source companion with title, abstract, related-work positioning, formal setup, theorem, methods, experiments, results, limitations, reproducibility checklist, and appendices.
 - `results/tables/stress_metrics.csv`: high-N behavior across graph families, hidden failures, and stress levels.
 - `results/tables/ablation_metrics.csv`: repair-component and combined-repair evidence.
 - `results/tables/adaptive_gate_metrics.csv`: adaptive-N gate decisions and selected utilities.
@@ -34,6 +36,14 @@ pytest
 - `results/claim_evidence_map.json`: supported and explicitly unsupported claims mapped to evidence artifacts or absence-of-evidence notes.
 - `figures/figure1_selected_tail_failure.png` through `figures/figure10_family_robustness.png`: the main figure suite.
 - `docs/final_audit.md`: final validation, artifact inventory, remaining limits, commit, and publication audit.
+
+## ICLR Paper Build
+
+```bash
+bash scripts/build_paper.sh
+```
+
+The command runs `latexmk -pdf -interaction=nonstopmode -halt-on-error main.tex` from `paper/iclr` when available, with a `pdflatex`/BibTeX fallback for MiKTeX environments where `latexmk` cannot start. It writes the local PDF to `paper/iclr/main.pdf`.
 
 ## Claim Discipline
 
