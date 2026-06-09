@@ -1,0 +1,29 @@
+{
+  "C1_exact_finite_law": [
+    "results/tables/exact_law_validation.csv",
+    "figures/figure3_exact_law_validation.png",
+    "tests/test_theory.py"
+  ],
+  "C2_selected_tail_failure": [
+    "results/tables/stress_metrics.csv",
+    "figures/figure1_selected_tail_failure.png",
+    "figures/figure4_stress_heatmap.png"
+  ],
+  "C3_repairs_and_ablation": [
+    "results/tables/ablation_metrics.csv",
+    "figures/figure5_ablation_components.png"
+  ],
+  "C4_adaptive_gate": [
+    "results/tables/adaptive_gate_metrics.csv",
+    "figures/figure6_adaptive_gate.png"
+  ],
+  "C5_learned_lite_calibration": [
+    "results/tables/learned_model_metrics.csv",
+    "figures/figure7_learned_model.png"
+  ],
+  "C6_scope_limits": [
+    "docs/claims.md",
+    "paper/paper.md",
+    "docs/final_audit.md"
+  ]
+}

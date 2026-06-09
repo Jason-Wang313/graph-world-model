@@ -1,0 +1,2 @@
+train_rows,test_rows,raw_score_mse_to_utility,learned_utility_mse,learned_hidden_energy_mse,raw_score_rank_correlation,learned_utility_rank_correlation,mean_raw_selected_utility,mean_learned_selected_utility,mean_oracle_selected_utility,mean_oracle_gap_closed
+4800,4800,0.025070960817101653,0.0057416355927914,0.01525167663904203,0.7564939260631044,0.9320148641282493,-0.17121298986605232,-0.164756492421749,-0.1620759492523121,0.0752742878045147
