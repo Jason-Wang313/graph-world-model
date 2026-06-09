@@ -10,8 +10,9 @@ Paper-readiness judgment: hardened CPU-synthetic paper package. Within the state
 ## Publication
 - Local branch: main.
 - Origin: https://github.com/Jason-Wang313/best-of-n-graph-world-model.git.
-- Submission package commit: pending commit and push for this manuscript pass.
-- Push result: pending.
+- Submission package commit: dc9268bd0a5ff8336fe9b0b35c90562fc2c4437a.
+- Push result: pass; origin/main pointed at dc9268bd0a5ff8336fe9b0b35c90562fc2c4437a after `git push`.
+- Post-push audit update: this file records the publication result after the submission-ready paper package pass.
 
 ## Strongest Artifacts
 - Failure artifact: figure1_selected_tail_failure.png plus stress_metrics.csv across graph families, hidden failures, and stress levels.
