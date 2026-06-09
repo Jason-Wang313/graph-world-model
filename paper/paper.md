@@ -87,6 +87,12 @@ The strongest artifacts are:
 - `figures/figure7_learned_model.png`
 - `figures/figure10_family_robustness.png`
 
+## Results Snapshot
+
+The bulletproof run covers 80 conditions and 22,400 seed-level selector rows. The exact finite law has mean absolute validation error `0.00134`. At high `N`, the adaptive gate improves selected real utility over raw selection by `0.00701` on average across all high-`N` cases, with bootstrap 95% CI `[0.00529, 0.00893]`. On the 155 hard high-`N` cases where raw selection leaves an oracle gap above `0.002`, adaptive gating improves selected real utility by `0.01447`, with bootstrap 95% CI `[0.01119, 0.01812]`. The adaptive gate has zero negative high-`N` deltas relative to raw selection in the final stress table.
+
+The learned-lite calibrator improves held-out rank correlation with real utility from `0.756` for the raw internal score to `0.932` for learned utility. The conservative learned-safe rule improves mean selected utility from `-0.1712` to `-0.1634`, compared with oracle `-0.1621`, and closes `0.588` of the hard-case oracle gap. This supports only the narrow calibration claim; the adaptive gate remains the safety-oriented selector because it is explicitly pilot-label gated.
+
 ## Claims
 
 Supported claims:

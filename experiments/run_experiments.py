@@ -86,8 +86,8 @@ def _mode_config(mode: str) -> dict[str, object]:
             "stresses": ["mild", "medium"],
             "primary_scenarios": SCENARIOS,
             "law_trials": 1200,
-            "learned_train": [0],
-            "learned_test": [11],
+            "learned_train": [0, 1],
+            "learned_test": [20, 21],
         }
     return {
         "ns": [1, 2, 4, 8, 16, 32, 64],
@@ -310,12 +310,16 @@ def _write_figures(main: pd.DataFrame, law_df: pd.DataFrame, learned_summary: pd
             ax.set_axis_off()
             return
         row = learned_summary.iloc[0]
-        labels = ["raw rank", "learned rank"]
-        values = [row["raw_score_rank_correlation"], row["learned_utility_rank_correlation"]]
-        ax.bar(labels, values, color=["#9c755f", "#4e79a7"])
+        labels = ["raw rank", "learned rank", "safe gap closed"]
+        values = [
+            row["raw_score_rank_correlation"],
+            row["learned_utility_rank_correlation"],
+            row["hard_case_safe_gap_closed"],
+        ]
+        ax.bar(labels, values, color=["#9c755f", "#4e79a7", "#59a14f"])
         ax.set_ylim(min(0.0, min(values) - 0.05), max(values) + 0.1)
-        ax.set_ylabel("rank correlation with real utility")
-        ax.set_title("Learned-lite calibration")
+        ax.set_ylabel("held-out metric")
+        ax.set_title("Learned-lite safe calibration")
 
     _write_required_plot(figures, "figure7_learned_model.png", figure7)
 
@@ -443,10 +447,35 @@ def run(root: Path, mode: str, ns: list[int] | None = None, seeds: list[int] | N
     adaptive_gate_metrics = seed_df[seed_df["selector"] == "adaptive_gate"].copy()
 
     high_filter = {"N": max(ns)}
+    high_filter = {"N": max(ns)}
+    keys = ["suite", "graph_family", "hidden_failure", "stress_level", "scenario", "N", "seed"]
+    raw_high = seed_df[(seed_df["selector"] == "raw") & (seed_df["N"] == max(ns))][keys + ["oracle_regret"]].rename(
+        columns={"oracle_regret": "raw_oracle_regret"}
+    )
+    with_raw_gap = seed_df.merge(raw_high, on=keys, how="left")
+    hard_seed_df = with_raw_gap[with_raw_gap["raw_oracle_regret"] > 0.002].copy()
+    hard_case_count = int(hard_seed_df[keys].drop_duplicates().shape[0])
+
     statistical_tests = pd.concat(
         [
-            paired_selector_summary(seed_df, "raw", ["combined_repair", "adaptive_gate", "oracle"], "selected_real_utility", high_filter),
-            paired_selector_summary(seed_df, "raw", ["combined_repair", "adaptive_gate"], "oracle_regret", high_filter),
+            paired_selector_summary(seed_df, "raw", ["combined_repair", "adaptive_gate", "oracle"], "selected_real_utility", high_filter, scope="all_high_n"),
+            paired_selector_summary(seed_df, "raw", ["combined_repair", "adaptive_gate"], "oracle_regret", high_filter, scope="all_high_n"),
+            paired_selector_summary(
+                hard_seed_df,
+                "raw",
+                ["combined_repair", "adaptive_gate", "oracle"],
+                "selected_real_utility",
+                high_filter,
+                scope="hard_oracle_gap_gt_0.002",
+            ),
+            paired_selector_summary(
+                hard_seed_df,
+                "raw",
+                ["combined_repair", "adaptive_gate"],
+                "oracle_regret",
+                high_filter,
+                scope="hard_oracle_gap_gt_0.002",
+            ),
         ],
         ignore_index=True,
     )
@@ -480,6 +509,7 @@ def run(root: Path, mode: str, ns: list[int] | None = None, seeds: list[int] | N
         "n_conditions": len(conditions),
         "n_seed_rows": int(seed_df.shape[0]),
         "n_main_rows": int(main.shape[0]),
+        "n_hard_high_n_cases": hard_case_count,
         "deployment_gate": _deployment_gate(main),
         "exact_law_mean_absolute_error": float(law_df["absolute_error"].mean()) if not law_df.empty else None,
         "learned_lite_ran": bool(not learned_summary.empty),

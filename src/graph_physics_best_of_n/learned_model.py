@@ -126,16 +126,24 @@ def train_and_evaluate(train_seeds: list[int], test_seeds: list[int]) -> tuple[p
     for _, group in test.groupby(group_cols):
         raw = group.loc[group["score"].idxmax()]
         learned = group.loc[group["learned_utility"].idxmax()]
+        raw_pred_hidden = float(raw["learned_hidden_energy"])
+        learned_pred_hidden = float(learned["learned_hidden_energy"])
+        pred_margin = float(learned["learned_utility"] - raw["learned_utility"])
+        use_safe_learned = bool(pred_margin > 0.020 and learned_pred_hidden <= raw_pred_hidden + 0.015)
+        safe = learned if use_safe_learned else raw
         oracle = group.loc[group["real_utility"].idxmax()]
+        oracle_gap = max(1e-9, oracle["real_utility"] - raw["real_utility"])
         selector_rows.append(
             {
                 "raw_selected_utility": float(raw["real_utility"]),
                 "learned_selected_utility": float(learned["real_utility"]),
+                "learned_safe_selected_utility": float(safe["real_utility"]),
                 "oracle_selected_utility": float(oracle["real_utility"]),
-                "oracle_gap_closed": float(
-                    (learned["real_utility"] - raw["real_utility"])
-                    / max(1e-9, oracle["real_utility"] - raw["real_utility"])
-                ),
+                "oracle_gap": float(oracle["real_utility"] - raw["real_utility"]),
+                "oracle_gap_closed": float((learned["real_utility"] - raw["real_utility"]) / oracle_gap),
+                "safe_oracle_gap_closed": float((safe["real_utility"] - raw["real_utility"]) / oracle_gap),
+                "safe_used_learned": use_safe_learned,
+                "safe_delta": float(safe["real_utility"] - raw["real_utility"]),
             }
         )
     selector_df = pd.DataFrame(selector_rows)
@@ -151,8 +159,15 @@ def train_and_evaluate(train_seeds: list[int], test_seeds: list[int]) -> tuple[p
                 "learned_utility_rank_correlation": learned_rank,
                 "mean_raw_selected_utility": float(selector_df["raw_selected_utility"].mean()),
                 "mean_learned_selected_utility": float(selector_df["learned_selected_utility"].mean()),
+                "mean_learned_safe_selected_utility": float(selector_df["learned_safe_selected_utility"].mean()),
                 "mean_oracle_selected_utility": float(selector_df["oracle_selected_utility"].mean()),
                 "mean_oracle_gap_closed": float(np.clip(selector_df["oracle_gap_closed"], -1.0, 1.0).mean()),
+                "mean_safe_oracle_gap_closed": float(np.clip(selector_df["safe_oracle_gap_closed"], 0.0, 1.0).mean()),
+                "safe_learned_use_rate": float(np.mean(selector_df["safe_used_learned"])),
+                "safe_negative_delta_rate": float(np.mean(selector_df["safe_delta"] < -1e-12)),
+                "hard_case_safe_gap_closed": float(
+                    np.clip(selector_df.loc[selector_df["oracle_gap"] > 1e-4, "safe_oracle_gap_closed"], 0.0, 1.0).mean()
+                ),
             }
         ]
     )

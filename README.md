@@ -35,7 +35,16 @@ pytest
 - `figures/figure1_selected_tail_failure.png` through `figures/figure10_family_robustness.png`: the main figure suite.
 - `docs/final_audit.md`: final validation, artifact inventory, remaining limits, commit, and publication audit.
 
+## Headline Bulletproof Results
+
+- 80 graph-physics conditions and 22,400 seed-level selector rows.
+- Exact law mean absolute validation error: `0.00134`.
+- Adaptive gate high-`N` gain over raw: `0.00701`, bootstrap 95% CI `[0.00529, 0.00893]`.
+- Adaptive gate hard-case high-`N` gain over raw: `0.01447`, bootstrap 95% CI `[0.01119, 0.01812]`.
+- Adaptive gate high-`N` negative deltas versus raw: `0`.
+- Learned-lite rank correlation improves from `0.756` to `0.932`.
+- Learned-safe calibration closes `0.588` of the hard-case oracle gap.
+
 ## Scope
 
 This is a controlled synthetic graph-physics paper package. It is not a real-robot result, not an external physics-engine benchmark, not a state-of-the-art claim, and not evidence that larger `N` universally helps. Within the stated CPU-synthetic scope, the package is designed to leave no obvious meaningful improvement before moving to external benchmarks or real-system data.
-

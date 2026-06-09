@@ -18,9 +18,10 @@
   "n_conditions": 80,
   "n_seed_rows": 22400,
   "n_main_rows": 5600,
+  "n_hard_high_n_cases": 155,
   "deployment_gate": "allow_high_n_with_adaptive_gate",
   "exact_law_mean_absolute_error": 0.0013411999207230887,
   "learned_lite_ran": true,
   "passes_claim_audit": true,
-  "runtime_seconds": 1729.208
+  "runtime_seconds": 1343.253
 }

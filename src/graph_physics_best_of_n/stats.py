@@ -47,6 +47,7 @@ def paired_selector_summary(
     treatments: list[str],
     metric: str,
     group_filter: dict[str, object] | None = None,
+    scope: str = "all",
 ) -> pd.DataFrame:
     df = seed_df.copy()
     if group_filter:
@@ -65,6 +66,7 @@ def paired_selector_summary(
         lo, hi = bootstrap_ci(joined["delta"], seed=len(treatment) + len(metric))
         rows.append(
             {
+                "scope": scope,
                 "baseline": baseline,
                 "treatment": treatment,
                 "metric": metric,

@@ -3,22 +3,8 @@
 Paper-readiness judgment: hardened CPU-synthetic paper package. Within the stated local synthetic scope, no obvious meaningful improvement remains before external benchmark or real-system work.
 
 ## Command Results
-- gh --version: pass (GitHub CLI 2.92.0, 2026-04-28)
-- gh auth status: failed (not logged into any GitHub hosts; git credential push path will be used)
-- git ls-remote origin refs/heads/main: pass (pre-push remote main at 3f713263d330c9b07ed660379c3363159105d968)
-- bash scripts/run_smoke.sh: pass (runtime 27.508s, health-check artifact run)
-- bash scripts/run_all.sh: pass (runtime 478.589s, gate allow_high_n_with_adaptive_gate)
-- bash scripts/run_bulletproof.sh: pass (runtime 1729.208s, 80 conditions, 22400 seed rows, gate allow_high_n_with_adaptive_gate)
+- experiments --mode bulletproof: pass (runtime 1343.253s, gate allow_high_n_with_adaptive_gate)
 - bash scripts/run_claim_audit.sh: pass
-- pytest: pass (9 tests passed in 46.96s)
-
-## Publication
-- Local branch: main.
-- Origin: https://github.com/Jason-Wang313/best-of-n-graph-world-model.git.
-- Pre-push local HEAD: 3f713263d330c9b07ed660379c3363159105d968.
-- Bulletproof package commit: cfa9cde9a82c7b13a6cf44bc1121bf2732f59dda.
-- Push result: pass; origin/main pointed at cfa9cde9a82c7b13a6cf44bc1121bf2732f59dda after `git push`.
-- Post-push audit update: this file records the publication result after the bulletproof package push.
 
 ## Strongest Artifacts
 - Failure artifact: figure1_selected_tail_failure.png plus stress_metrics.csv across graph families, hidden failures, and stress levels.
@@ -26,6 +12,14 @@ Paper-readiness judgment: hardened CPU-synthetic paper package. Within the state
 - Gate artifact: figure6_adaptive_gate.png and adaptive_gate_metrics.csv.
 - Learned artifact: learned_model_metrics.csv and figure7_learned_model.png.
 - Law artifact: exact_law_validation.csv and figure3_exact_law_validation.png.
+
+## Headline Metrics
+- Exact law mean absolute validation error: 0.0013411999207230887.
+- Adaptive high-N gain over raw across all cases: 0.0070089879759587, 95% CI [0.005287485616096714, 0.008930559116783959].
+- Adaptive hard-case high-N gain over raw: 0.01446729200886622, 95% CI [0.011194679545615097, 0.018119609665175052].
+- Adaptive high-N negative deltas versus raw: 0.
+- Learned-lite rank correlation: raw score 0.7564939260631044, learned utility 0.9320148641282493.
+- Learned-safe hard-case oracle-gap closure: 0.5877721836857546.
 
 ## Differentiation
 The repo reuses only the finite Best-of-N law pattern. The scientific object is graph-structured toy physics: observed springs, hidden constraints, graph-energy checks, calibration gaps, learned-lite score calibration, and adaptive high-N gating.
