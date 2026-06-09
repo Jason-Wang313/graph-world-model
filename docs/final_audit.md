@@ -13,8 +13,11 @@ Paper-readiness judgment: hardened CPU-synthetic paper package. Within the state
 ## Publication
 - Local branch: main.
 - Origin: https://github.com/Jason-Wang313/best-of-n-graph-world-model.git.
-- ICLR LaTeX package commit: pending post-push audit update.
-- Push result: pending post-push audit update.
+- ICLR LaTeX package commit: 2dc941abf28de9947ba191b2b0c7addaa58a94e3.
+- Push result: pass; origin/main pointed at 2dc941abf28de9947ba191b2b0c7addaa58a94e3 after `git push`.
+- Remote verification: pass; `git ls-remote origin refs/heads/main` matched local `HEAD` at 2dc941abf28de9947ba191b2b0c7addaa58a94e3.
+- Download copy: C:\Users\wangz\Downloads\best-of-n-graph-world-model-iclr-paper.pdf.
+- Post-push audit update: this file records the ICLR LaTeX package push and local PDF download copy.
 
 ## Strongest Artifacts
 - Failure artifact: figure1_selected_tail_failure.png plus stress_metrics.csv across graph families, hidden failures, and stress levels.
