@@ -16,7 +16,9 @@ Paper-readiness judgment: hardened CPU-synthetic paper package. Within the state
 - Local branch: main.
 - Origin: https://github.com/Jason-Wang313/best-of-n-graph-world-model.git.
 - Pre-push local HEAD: 3f713263d330c9b07ed660379c3363159105d968.
-- Push result: pending at pre-commit audit time.
+- Bulletproof package commit: cfa9cde9a82c7b13a6cf44bc1121bf2732f59dda.
+- Push result: pass; origin/main pointed at cfa9cde9a82c7b13a6cf44bc1121bf2732f59dda after `git push`.
+- Post-push audit update: this file records the publication result after the bulletproof package push.
 
 ## Strongest Artifacts
 - Failure artifact: figure1_selected_tail_failure.png plus stress_metrics.csv across graph families, hidden failures, and stress levels.
