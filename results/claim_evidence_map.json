@@ -3,9 +3,9 @@
     {
       "id": "C1_exact_finite_law",
       "status": "supported",
-      "claim": "Exact finite tie-aware Best-of-N laws predict selected utility for finite graph-physics candidate pools.",
+      "claim": "Exact finite score-tie laws predict selected utility for finite graph-physics candidate pools.",
       "evidence": [
-        "src/graph_physics_best_of_n/theory.py",
+        "src/graph_constraint_tail_audit/theory.py",
         "tests/test_theory.py",
         "results/tables/exact_law_validation.csv",
         "figures/figure3_exact_law_validation.png"
@@ -28,7 +28,7 @@
       "status": "supported",
       "claim": "Repair components and combined repair improve selected-tail behavior in the synthetic stress suite.",
       "evidence": [
-        "src/graph_physics_best_of_n/selection.py",
+        "src/graph_constraint_tail_audit/selection.py",
         "results/tables/ablation_metrics.csv",
         "results/tables/repair_metrics.csv",
         "results/tables/statistical_tests.csv",
@@ -52,7 +52,7 @@
       "status": "supported",
       "claim": "A CPU NumPy learned-lite calibrator improves held-out rank alignment in synthetic graph conditions.",
       "evidence": [
-        "src/graph_physics_best_of_n/learned_model.py",
+        "src/graph_constraint_tail_audit/learned_model.py",
         "results/tables/learned_model_metrics.csv",
         "results/tables/learned_model_predictions.csv",
         "figures/figure7_learned_model.png"
@@ -64,7 +64,7 @@
       "status": "supported",
       "claim": "The evidence spans multiple graph families, hidden-failure modes, and stress levels inside a CPU-local synthetic benchmark.",
       "evidence": [
-        "src/graph_physics_best_of_n/graph_physics.py",
+        "src/graph_constraint_tail_audit/graph_physics.py",
         "results/tables/stress_metrics.csv",
         "figures/figure10_family_robustness.png",
         "results/run_summary.json"

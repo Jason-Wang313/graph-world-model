@@ -1,4 +1,4 @@
-"""Finite tie-aware Best-of-N selection laws."""
+"""Finite score-tie selection laws."""
 
 from __future__ import annotations
 
@@ -65,7 +65,7 @@ def selected_tie_groups(
     return groups
 
 
-def exact_best_of_n_expected_utility(
+def exact_score_tail_expected_utility(
     utilities: Iterable[float],
     scores: Iterable[float] | None = None,
     n: int = 1,
@@ -79,10 +79,10 @@ def expected_curve(
     scores: Iterable[float] | None,
     ns: Iterable[int],
 ) -> dict[int, float]:
-    return {int(n): exact_best_of_n_expected_utility(utilities, scores, int(n)) for n in ns}
+    return {int(n): exact_score_tail_expected_utility(utilities, scores, int(n)) for n in ns}
 
 
-def monte_carlo_best_of_n(
+def monte_carlo_score_tail_selection(
     utilities: Iterable[float],
     scores: Iterable[float] | None = None,
     n: int = 1,
@@ -119,8 +119,8 @@ def law_validation_row(
     trials: int,
     seed: int,
 ) -> dict[str, float | int]:
-    predicted = exact_best_of_n_expected_utility(utilities, scores, n=n)
-    empirical = monte_carlo_best_of_n(utilities, scores, n=n, trials=trials, seed=seed)
+    predicted = exact_score_tail_expected_utility(utilities, scores, n=n)
+    empirical = monte_carlo_score_tail_selection(utilities, scores, n=n, trials=trials, seed=seed)
     return {
         "N": int(n),
         "predicted_selected_utility": float(predicted),
@@ -129,4 +129,3 @@ def law_validation_row(
         "trials": int(trials),
         "seed": int(seed),
     }
-

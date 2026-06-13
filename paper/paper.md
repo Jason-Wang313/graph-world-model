@@ -1,14 +1,14 @@
-# When Graph Worlds Overfit Their Own Physics
+# Constraint Shadows in Graph World Models
 
 ## Abstract
 
 Graph-structured world models often score imagined futures using only the
 constraints encoded in the learned or specified graph. We study a controlled
-failure mode for inference-time Best-of-N selection: as the number of sampled
+constraint-shadow failure mode: as the number of sampled
 futures grows, the selected future can move into a high-score tail that
 exploits missing or miscalibrated graph constraints, improving internal score
 while leaving executed utility below the oracle tail. We give a finite
-tie-aware Best-of-N law for scored candidate pools, validate it empirically,
+finite score-tie law for top-score candidate pools, validate it empirically,
 and test graph-energy, action, calibration-gap, constraint-probe,
 combined-repair, adaptive-gating, and learned-lite calibration controls in a
 CPU-only synthetic mass-spring stress suite. The evidence is intentionally
@@ -36,10 +36,10 @@ Evidence: `docs/claims.md`, `results/claims_status.md`, and
 
 ## Contributions
 
-1. Finite-pool law. We state and validate an exact tie-aware law for selected
-   utility under Best-of-N sampling from a finite scored pool.
+1. Finite-pool law. We state and validate an exact score-tie law for selected
+   utility under top-score selection from a finite scored pool.
 
-   Evidence: `src/graph_physics_best_of_n/theory.py`,
+   Evidence: `src/graph_constraint_tail_audit/theory.py`,
    `tests/test_theory.py`, `results/tables/exact_law_validation.csv`, and
    `figures/figure3_exact_law_validation.png`.
 
@@ -47,7 +47,7 @@ Evidence: `docs/claims.md`, `results/claims_status.md`, and
    mass-spring graph worlds with five graph families, five hidden-failure
    modes, and three stress levels.
 
-   Evidence: `src/graph_physics_best_of_n/graph_physics.py`,
+   Evidence: `src/graph_constraint_tail_audit/graph_physics.py`,
    `results/tables/stress_metrics.csv`, `results/run_summary.json`, and
    `figures/figure10_family_robustness.png`.
 
@@ -55,7 +55,7 @@ Evidence: `docs/claims.md`, `results/claims_status.md`, and
    action, calibration-gap, graph-energy, constraint-probe, combined-repair,
    adaptive-gate, random, and oracle selectors.
 
-   Evidence: `src/graph_physics_best_of_n/selection.py`,
+   Evidence: `src/graph_constraint_tail_audit/selection.py`,
    `results/tables/ablation_metrics.csv`,
    `results/tables/repair_metrics.csv`,
    `results/tables/statistical_tests.csv`, `figures/figure5_ablation_components.png`,
@@ -72,14 +72,14 @@ Evidence: `docs/claims.md`, `results/claims_status.md`, and
    improve held-out rank alignment between candidate features and real utility
    in synthetic graph conditions.
 
-   Evidence: `src/graph_physics_best_of_n/learned_model.py`,
+   Evidence: `src/graph_constraint_tail_audit/learned_model.py`,
    `results/tables/learned_model_metrics.csv`,
    `results/tables/learned_model_predictions.csv`, and
    `figures/figure7_learned_model.png`.
 
 ## Introduction
 
-Best-of-N inference is attractive because it is operationally simple. A model
+Top-score graph-world selection is attractive because it is operationally simple. A model
 samples `N` candidate futures, scores them, and executes the highest-scoring
 candidate. If the score is aligned with real utility, larger `N` can expose
 better options. If the score is miscalibrated in the tail, larger `N` can
@@ -111,7 +111,7 @@ This repository is positioned as a small evidence package for inference-time
 selection risk, not as a broad benchmark paper. It connects to three familiar
 threads:
 
-- Best-of-N and reranking methods, where the selected sample is an extreme
+- Candidate reranking and inference-time selection methods, where the selected sample is an extreme
   order statistic under a model score.
 - Model-based control and world-model evaluation, where imagined rollouts are
   useful only to the extent that their scores track downstream utility.
@@ -131,7 +131,7 @@ Evidence: `docs/claims.md`, `results/claims_status.md`, and
 ## Formal Setup
 
 Let a finite candidate pool contain `m` candidates. Candidate `i` has internal
-score `S_i` and real utility `U_i`. Best-of-N draws `N` candidates with
+score `S_i` and real utility `U_i`. The candidate-budget selector draws `N` candidates with
 replacement from the pool and selects a sampled candidate with maximal score.
 If sampled candidates tie for maximal score, the selector breaks ties uniformly
 among the tied sampled positions.
@@ -141,13 +141,13 @@ used to select. The utility is the evaluator-facing quantity used to judge the
 selected candidate. In the graph-physics experiments, `S_i` is the imagined
 graph score and `U_i` is the true-rollout utility.
 
-### Theorem 1: Finite Tie-Aware Best-of-N Law
+### Theorem 1: Finite Score-Tie Selection Law
 
 Partition the pool into exact score-tie groups `g`, ordered from highest score
 to lowest score. Let `k_g` be the number of candidates in group `g`, let `b_g`
 be the number of candidates with lower score than group `g`, and let
 `mean(U | g)` be the mean real utility of candidates in group `g`. Then the
-expected selected utility under Best-of-N is
+expected selected utility under top-score selection is
 
 ```text
 E[U_selected] = sum_g p_g mean(U | g),
@@ -159,7 +159,7 @@ where
 p_g = ((k_g + b_g) / m)^N - (b_g / m)^N.
 ```
 
-Evidence: implementation in `src/graph_physics_best_of_n/theory.py`, tests in
+Evidence: implementation in `src/graph_constraint_tail_audit/theory.py`, tests in
 `tests/test_theory.py`, empirical validation in
 `results/tables/exact_law_validation.csv`, and visual validation in
 `figures/figure3_exact_law_validation.png`.
@@ -202,7 +202,7 @@ Stress levels:
 - `medium`
 - `severe`
 
-Evidence: generator definitions in `src/graph_physics_best_of_n/graph_physics.py`,
+Evidence: generator definitions in `src/graph_constraint_tail_audit/graph_physics.py`,
 condition coverage in `results/run_summary.json`, stress aggregates in
 `results/tables/stress_metrics.csv`, and family robustness in
 `figures/figure10_family_robustness.png`.
@@ -234,7 +234,7 @@ This explicit mismatch is the benchmark object. It is not presented as a
 real-world robot reward; it is a controlled stress test for score/utility
 alignment in graph-structured imagined rollouts.
 
-Evidence: `src/graph_physics_best_of_n/graph_physics.py` and
+Evidence: `src/graph_constraint_tail_audit/graph_physics.py` and
 `results/tables/seed_metrics.csv`.
 
 ## Selectors
@@ -275,7 +275,7 @@ or when pilot-label evidence shows a repair gain. This gate is deliberately
 described as pilot-label synthetic evidence, not as a deployable online safety
 certificate.
 
-Evidence: `src/graph_physics_best_of_n/selection.py`,
+Evidence: `src/graph_constraint_tail_audit/selection.py`,
 `results/tables/ablation_metrics.csv`,
 `results/tables/adaptive_gate_metrics.csv`, and
 `results/tables/statistical_tests.csv`.
@@ -293,7 +293,7 @@ utility margin is large enough and predicted hidden energy is not worse than
 the raw selected candidate by more than a small tolerance. This is a lightweight
 calibration test, not a learned simulator claim.
 
-Evidence: `src/graph_physics_best_of_n/learned_model.py`,
+Evidence: `src/graph_constraint_tail_audit/learned_model.py`,
 `results/tables/learned_model_metrics.csv`,
 `results/tables/learned_model_predictions.csv`, and
 `figures/figure7_learned_model.png`.
@@ -337,7 +337,7 @@ Evidence: `results/tables/statistical_tests.csv`.
 
 ### Selected-Tail Failure
 
-Raw Best-of-N improves internal selected score as `N` grows, but the selected
+Raw top-score selection improves internal selected score as `N` grows, but the selected
 candidate can remain below the oracle tail under real utility. The stress suite
 shows this effect across graph families and hidden-failure modes rather than in
 a single cherry-picked condition.
@@ -520,7 +520,7 @@ Unsupported claims:
 
 ## Conclusion
 
-Best-of-N selection is not merely "more samples." It is tail selection under a
+Top-score graph-world selection is not merely "more samples." It is tail selection under a
 score. In these controlled graph worlds, the tail can overfit the imagined
 graph's physics: internal score improves while real utility remains below the
 oracle tail. The finite law explains the selection mechanism, and the stress
@@ -563,7 +563,7 @@ Summing over groups gives:
 E[U_selected] = sum_g p_g mean(U | g).
 ```
 
-Evidence: `src/graph_physics_best_of_n/theory.py` and `tests/test_theory.py`.
+Evidence: `src/graph_constraint_tail_audit/theory.py` and `tests/test_theory.py`.
 
 ## Appendix B: Benchmark Details
 
@@ -578,7 +578,7 @@ The final bulletproof configuration is recorded in `results/run_summary.json`:
 80 conditions, and 22,400 seed-level selector rows.
 
 Evidence: `experiments/run_experiments.py`,
-`src/graph_physics_best_of_n/graph_physics.py`, and
+`src/graph_constraint_tail_audit/graph_physics.py`, and
 `results/run_summary.json`.
 
 ## Appendix C: Selector Definitions
@@ -588,7 +588,7 @@ section. The ablation table is the primary artifact for comparing component
 roles; the statistical table is the primary artifact for paired high-`N`
 deltas.
 
-Evidence: `src/graph_physics_best_of_n/selection.py`,
+Evidence: `src/graph_constraint_tail_audit/selection.py`,
 `results/tables/ablation_metrics.csv`, and
 `results/tables/statistical_tests.csv`.
 
@@ -600,7 +600,7 @@ from graph families, hidden failures, and stress levels. The model is evaluated
 by MSE, rank correlation, selected utility, oracle-gap closure, safe use rate,
 and negative-delta rate.
 
-Evidence: `src/graph_physics_best_of_n/learned_model.py`,
+Evidence: `src/graph_constraint_tail_audit/learned_model.py`,
 `results/tables/learned_model_metrics.csv`, and
 `results/tables/learned_model_predictions.csv`.
 
@@ -611,6 +611,6 @@ claim status generated by the audit is `results/claims_status.md` and
 `results/claims_status.json`. The final publication-oriented audit is
 `docs/final_audit.md`.
 
-Evidence: `src/graph_physics_best_of_n/audit.py`,
+Evidence: `src/graph_constraint_tail_audit/audit.py`,
 `results/claim_evidence_map.json`, `results/claims_status.md`, and
 `docs/final_audit.md`.

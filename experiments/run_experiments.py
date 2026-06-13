@@ -1,4 +1,4 @@
-"""Run controlled graph-physics Best-of-N experiments."""
+"""Run controlled graph-physics score-tail selection experiments."""
 
 from __future__ import annotations
 
@@ -18,8 +18,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-from graph_physics_best_of_n.audit import write_claim_status, write_final_audit
-from graph_physics_best_of_n.graph_physics import (
+from graph_constraint_tail_audit.audit import write_claim_status, write_final_audit
+from graph_constraint_tail_audit.graph_physics import (
     GRAPH_FAMILIES,
     HIDDEN_FAILURES,
     SCENARIO_BY_FAILURE,
@@ -29,10 +29,10 @@ from graph_physics_best_of_n.graph_physics import (
     generate_candidates,
     make_world,
 )
-from graph_physics_best_of_n.learned_model import train_and_evaluate
-from graph_physics_best_of_n.selection import SELECTORS
-from graph_physics_best_of_n.stats import bootstrap_ci, paired_selector_summary
-from graph_physics_best_of_n.theory import law_validation_row
+from graph_constraint_tail_audit.learned_model import train_and_evaluate
+from graph_constraint_tail_audit.selection import SELECTORS
+from graph_constraint_tail_audit.stats import bootstrap_ci, paired_selector_summary
+from graph_constraint_tail_audit.theory import law_validation_row
 
 
 SELECTOR_ORDER = [
@@ -244,7 +244,7 @@ def _write_figures(main: pd.DataFrame, law_df: pd.DataFrame, learned_summary: pd
         ax2 = ax.twinx()
         ax2.plot(raw["N"], raw["selected_real_utility"], marker="s", color="#c44e52", label="real utility")
         ax2.set_ylabel("real utility", color="#c44e52")
-        ax.set_title("Raw selected-tail failure")
+        ax.set_title("Constraint-shadow failure")
 
     _write_required_plot(figures, "figure1_selected_tail_failure.png", figure1)
 
@@ -266,7 +266,7 @@ def _write_figures(main: pd.DataFrame, law_df: pd.DataFrame, learned_summary: pd
         ax.set_xscale("log", base=2)
         ax.set_xlabel("N")
         ax.set_ylabel("selected real utility")
-        ax.set_title("Finite law validation")
+        ax.set_title("Score-tie law validation")
         ax.legend()
 
     _write_required_plot(figures, "figure3_exact_law_validation.png", figure3)
@@ -412,9 +412,9 @@ def _write_claim_evidence_map(root: Path) -> None:
             {
                 "id": "C1_exact_finite_law",
                 "status": "supported",
-                "claim": "Exact finite tie-aware Best-of-N laws predict selected utility for finite graph-physics candidate pools.",
+                "claim": "Exact finite score-tie laws predict selected utility for finite graph-physics candidate pools.",
                 "evidence": [
-                    "src/graph_physics_best_of_n/theory.py",
+                    "src/graph_constraint_tail_audit/theory.py",
                     "tests/test_theory.py",
                     "results/tables/exact_law_validation.csv",
                     "figures/figure3_exact_law_validation.png",
@@ -437,7 +437,7 @@ def _write_claim_evidence_map(root: Path) -> None:
                 "status": "supported",
                 "claim": "Repair components and combined repair improve selected-tail behavior in the synthetic stress suite.",
                 "evidence": [
-                    "src/graph_physics_best_of_n/selection.py",
+                    "src/graph_constraint_tail_audit/selection.py",
                     "results/tables/ablation_metrics.csv",
                     "results/tables/repair_metrics.csv",
                     "results/tables/statistical_tests.csv",
@@ -461,7 +461,7 @@ def _write_claim_evidence_map(root: Path) -> None:
                 "status": "supported",
                 "claim": "A CPU NumPy learned-lite calibrator improves held-out rank alignment in synthetic graph conditions.",
                 "evidence": [
-                    "src/graph_physics_best_of_n/learned_model.py",
+                    "src/graph_constraint_tail_audit/learned_model.py",
                     "results/tables/learned_model_metrics.csv",
                     "results/tables/learned_model_predictions.csv",
                     "figures/figure7_learned_model.png",
@@ -473,7 +473,7 @@ def _write_claim_evidence_map(root: Path) -> None:
                 "status": "supported",
                 "claim": "The evidence spans multiple graph families, hidden-failure modes, and stress levels inside a CPU-local synthetic benchmark.",
                 "evidence": [
-                    "src/graph_physics_best_of_n/graph_physics.py",
+                    "src/graph_constraint_tail_audit/graph_physics.py",
                     "results/tables/stress_metrics.csv",
                     "figures/figure10_family_robustness.png",
                     "results/run_summary.json",

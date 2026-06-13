@@ -30,4 +30,4 @@ fi
 export PYTHONPATH="$PY_SRC"
 
 "$PYTHON_BIN" experiments/run_experiments.py --mode bulletproof --root "$PY_ROOT"
-"$PYTHON_BIN" src/graph_physics_best_of_n/audit.py --root "$PY_ROOT"
+"$PYTHON_BIN" src/graph_constraint_tail_audit/audit.py --root "$PY_ROOT"

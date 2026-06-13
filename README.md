@@ -1,6 +1,6 @@
-# When Graph Worlds Overfit Their Own Physics
+# Constraint Shadows in Graph World Models
 
-This repository is a submission-oriented evidence package for **Best-of-N inference in graph-structured physics world models**. A model proposes future trajectories on a mass-spring graph, scores each imagined future with an internal graph-physics score, and executes the highest-scoring candidate. Real utility is evaluated by a separate simulator that includes hidden constraints, shifted rest lengths, topology aliasing, delayed damping, and long-horizon drift.
+This repository is a submission-oriented evidence package for **constraint-shadow audits in graph-structured physics world models**. A model proposes future trajectories on a mass-spring graph, scores each imagined future with an internal graph-physics score, and executes the highest-scoring candidate. Real utility is evaluated by a separate simulator that includes hidden constraints, shifted rest lengths, topology aliasing, delayed damping, and long-horizon drift.
 
 The central result is intentionally strict: in controlled CPU-local graph-physics settings, increasing `N` can improve selected internal score while leaving real utility below the oracle tail because the high-score tail exploits constraints the imagined graph does not faithfully represent. The repo then tests risk controls: graph-energy penalties, action penalties, calibration-gap penalties, constraint probes, combined repair, pilot-label adaptive gating, and a learned-lite NumPy calibrator. Every supported manuscript claim is mapped to concrete CSVs, figures, tests, or audit artifacts.
 
@@ -16,7 +16,7 @@ pytest
 
 ## What Is Included
 
-- Exact finite tie-aware Best-of-N laws for scored finite candidate pools.
+- Exact finite score-tie laws for top-score candidate selection in finite pools.
 - A graph-physics stress suite over five graph families, five hidden-failure modes, and three stress levels.
 - Selector ablations for each repair component plus combined repair, adaptive gating, random, and oracle baselines.
 - Bootstrap confidence intervals, paired seed deltas, effect-size summaries, and oracle-gap closure metrics.

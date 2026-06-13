@@ -6,14 +6,14 @@ listed so the paper package does not imply evidence that is not present.
 
 ## Supported
 
-### C1: Exact finite tie-aware law
+### C1: Exact finite score-tie law
 
-Exact finite tie-aware Best-of-N laws predict selected utility for finite
-graph-physics candidate pools.
+Exact finite score-tie laws predict selected utility for finite graph-physics
+candidate pools.
 
 Evidence:
 
-- `src/graph_physics_best_of_n/theory.py`
+- `src/graph_constraint_tail_audit/theory.py`
 - `tests/test_theory.py`
 - `results/tables/exact_law_validation.csv`
 - `figures/figure3_exact_law_validation.png`
@@ -39,7 +39,7 @@ roles in selected-tail recovery inside the synthetic suite.
 
 Evidence:
 
-- `src/graph_physics_best_of_n/selection.py`
+- `src/graph_constraint_tail_audit/selection.py`
 - `results/tables/ablation_metrics.csv`
 - `results/tables/repair_metrics.csv`
 - `results/tables/statistical_tests.csv`
@@ -67,7 +67,7 @@ candidate scores and real utility on synthetic graph conditions.
 
 Evidence:
 
-- `src/graph_physics_best_of_n/learned_model.py`
+- `src/graph_constraint_tail_audit/learned_model.py`
 - `results/tables/learned_model_metrics.csv`
 - `results/tables/learned_model_predictions.csv`
 - `figures/figure7_learned_model.png`
@@ -82,7 +82,7 @@ stress levels inside a CPU-local synthetic benchmark.
 
 Evidence:
 
-- `src/graph_physics_best_of_n/graph_physics.py`
+- `src/graph_constraint_tail_audit/graph_physics.py`
 - `results/tables/stress_metrics.csv`
 - `figures/figure10_family_robustness.png`
 - `results/run_summary.json`

@@ -1,6 +1,6 @@
-from graph_physics_best_of_n.graph_physics import GRAPH_FAMILIES, HIDDEN_FAILURES, STRESS_LEVELS, generate_candidates, make_world
-from graph_physics_best_of_n.selection import SELECTORS, adaptive_gate_decision, combined_repair_score
-from graph_physics_best_of_n.theory import exact_best_of_n_expected_utility
+from graph_constraint_tail_audit.graph_physics import GRAPH_FAMILIES, HIDDEN_FAILURES, STRESS_LEVELS, generate_candidates, make_world
+from graph_constraint_tail_audit.selection import SELECTORS, adaptive_gate_decision, combined_repair_score
+from graph_constraint_tail_audit.theory import exact_score_tail_expected_utility
 
 
 def test_raw_high_n_exposes_selected_tail_risk():
@@ -8,8 +8,8 @@ def test_raw_high_n_exposes_selected_tail_risk():
     pool = generate_candidates(world, 128, scenario="raw", seed=99)
     utilities = [candidate.real_utility for candidate in pool]
     scores = [candidate.score for candidate in pool]
-    raw_high_n = exact_best_of_n_expected_utility(utilities, scores, n=64)
-    oracle_high_n = exact_best_of_n_expected_utility(utilities, utilities, n=64)
+    raw_high_n = exact_score_tail_expected_utility(utilities, scores, n=64)
+    oracle_high_n = exact_score_tail_expected_utility(utilities, utilities, n=64)
     best_score_candidate = max(pool, key=lambda candidate: candidate.score)
     best_utility_candidate = max(pool, key=lambda candidate: candidate.real_utility)
     assert oracle_high_n >= raw_high_n

@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from graph_physics_best_of_n.audit import claim_inventory, scan_forbidden_overclaims, write_claim_status
+from graph_constraint_tail_audit.audit import claim_inventory, scan_forbidden_overclaims, write_claim_status
 
 
 REQUIRED = [

@@ -1,6 +1,6 @@
 import math
 
-from graph_physics_best_of_n.theory import exact_best_of_n_expected_utility, monte_carlo_best_of_n, selected_tie_groups
+from graph_constraint_tail_audit.theory import exact_score_tail_expected_utility, monte_carlo_score_tail_selection, selected_tie_groups
 
 
 def test_tie_aware_groups_sum_to_one():
@@ -13,7 +13,7 @@ def test_tie_aware_groups_sum_to_one():
 def test_exact_law_matches_monte_carlo():
     utilities = [-1.0, 0.0, 0.5, -0.25, 0.75]
     scores = [0.9, 0.2, 0.7, 1.1, 0.1]
-    exact = exact_best_of_n_expected_utility(utilities, scores, n=5)
-    empirical = monte_carlo_best_of_n(utilities, scores, n=5, trials=40_000, seed=12)
+    exact = exact_score_tail_expected_utility(utilities, scores, n=5)
+    empirical = monte_carlo_score_tail_selection(utilities, scores, n=5, trials=40_000, seed=12)
     assert abs(exact - empirical) < 0.02
 

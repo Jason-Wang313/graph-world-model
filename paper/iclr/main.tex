@@ -9,15 +9,14 @@
 \usepackage{booktabs}
 \usepackage{graphicx}
 \usepackage{url}
-\usepackage{hyperref}
+\usepackage[hidelinks]{hyperref}
 
 \newtheorem{theorem}{Theorem}
-\newcommand{\bestn}{Best-of-$N$}
 \newcommand{\utility}{U}
 \newcommand{\score}{S}
 \newcommand{\selected}{\mathrm{sel}}
 
-\title{When Graph Worlds Overfit Their Own Physics}
+\title{Constraint Shadows in Graph World Models}
 
 \author{Anonymous Authors}
 
@@ -27,22 +26,22 @@
 \maketitle
 
 \begin{abstract}
-\bestn{} inference is tail selection under a model score: sample $N$ candidate futures, score each one, and execute the highest-scoring candidate.  If the score omits constraints that matter under execution, larger $N$ can concentrate selection on candidates that are good only inside the model's imagined physics.  We study this failure mode in a CPU-local synthetic graph-physics suite where an imagined mass-spring graph scores rollouts and a separate true graph evaluates utility.  We prove an exact finite-pool, tie-aware law for the expected utility selected by \bestn{}, validate it empirically with mean absolute error $0.001341$, and audit graph-energy, action, calibration-gap, constraint-probe, combined-repair, adaptive-gating, and learned-lite calibration controls.  At $N=64$, adaptive gating improves selected real utility over raw selection by $0.00701$ on 320 paired cases and by $0.01447$ on 155 hard cases, with zero negative deltas in this audit.  The evidence is deliberately narrow: synthetic graph physics only, no real-robot validation, no external simulator benchmark, and no claim that larger $N$ universally improves deployed behavior.
+When an imagined graph scores its own candidate futures, inference can optimize a constraint shadow: the future that best satisfies the model's visible graph need not satisfy the true constraint system.  We study this failure mode in a CPU-local synthetic graph-physics suite where an imagined mass-spring graph scores rollouts and a separate true graph evaluates utility.  We prove an exact finite-pool, tie-aware law for top-score candidate selection, validate it empirically with mean absolute error $0.001341$, and audit graph-energy, action, calibration-gap, constraint-probe, combined-repair, adaptive-gating, and learned-lite calibration controls.  At $N=64$, adaptive gating improves selected real utility over raw selection by $0.00701$ on 320 paired cases and by $0.01447$ on 155 hard cases, with zero negative deltas in this audit.  The evidence is deliberately narrow: synthetic graph physics only, no real-robot validation, no external simulator benchmark, and no claim that larger $N$ universally improves deployed behavior.
 \end{abstract}
 
 \section{Introduction}
 
-Increasing $N$ in a \bestn{} controller is often described as ``more search.''  A more precise description is tail selection under a score.  The controller samples $N$ futures, evaluates each with an internal score, and chooses the maximum.  If the high-score tail is also high-utility, increasing $N$ can help.  If the score is misspecified in the tail, increasing $N$ can make the selected future more extreme along precisely the dimensions the score fails to penalize.
+Increasing the candidate budget in a graph-world controller is often described as ``more search.''  A more precise description is top-score selection under a model's visible constraints.  The controller samples $N$ futures, evaluates each with an internal graph score, and chooses the maximum.  If the high-score tail is also high-utility, increasing \(N\) can help.  If the score is misspecified in the constraint shadow, increasing \(N\) can make the selected future more extreme along precisely the dimensions the imagined graph fails to penalize.
 
 Graph-structured world models make this question concrete.  A graph simulator can encode object relations, springs, contacts, or inferred interactions, but the graph used for imagination can omit edges, shift rest lengths, alias topology, understate damping, or drift over horizon.  Then the model score may improve because a trajectory exploits the imagined graph, while the executed utility remains below the oracle tail under the true graph.
 
 This paper makes a narrow claim.  In controlled CPU-local synthetic graph physics, raw high-$N$ selection exposes a measurable score/utility tail mismatch, and simple auditable repairs reduce that mismatch in the same suite.  We do not claim real-robot validation, broad benchmark superiority, state-of-the-art physics modeling, or deployment safety.  The contribution is an inspectable stress test and claim audit for a particular failure mechanism.
 
-The paper contributes: (1) an exact finite-pool law for tie-aware \bestn{} selection; (2) a graph-physics stress suite over five graph families, five hidden failures, and three stress levels; (3) selector, repair, adaptive-gate, and learned-lite calibration audits tied to CSV artifacts; and (4) an explicit limitation and reproducibility record.
+The paper contributes: (1) an exact finite-pool law for tie-aware top-score selection; (2) a graph-physics stress suite over five graph families, five hidden failures, and three stress levels; (3) selector, repair, adaptive-gate, and learned-lite calibration audits tied to CSV artifacts; and (4) an explicit limitation and reproducibility record.
 
 \section{Related Work}
 
-\bestn{} and reranking are common inference-time tools.  Reward-model or verifier-based selection appears in summarization, mathematical reasoning, web-assisted question answering, and instruction following \citep{stiennon2020learning,cobbe2021training,nakano2021webgpt,ouyang2022training}.  Our focus is not language generation, but the same order-statistic pressure: the selected sample is an extreme under a learned or specified score \citep{david2003order}.
+Candidate reranking and inference-time selection are common tools.  Reward-model or verifier-based selection appears in summarization, mathematical reasoning, web-assisted question answering, and instruction following \citep{stiennon2020learning,cobbe2021training,nakano2021webgpt,ouyang2022training}.  Our focus is not language generation, but the same order-statistic pressure: the selected sample is an extreme under a learned or specified score \citep{david2003order}.
 
 World models and model-based control use learned dynamics for imagination, planning, and policy improvement \citep{ha2018recurrent,hafner2019planet,hafner2020dreamer}.  Graph and object-centric dynamics models represent interacting systems with relational structure \citep{battaglia2016interaction,kipf2018neural,sanchezgonzalez2020learning}.  This work does not propose a new graph simulator.  It asks what happens when selection is optimized against a graph score whose constraints are deliberately incomplete.
 
@@ -50,9 +49,9 @@ Calibration and robustness work studies whether model-facing scores remain meani
 
 \section{Formal Setup}
 
-Let a finite pool contain $m$ candidates.  Candidate $i$ has model score $\score_i$ and evaluator utility $\utility_i$.  \bestn{} draws $N$ candidates independently with replacement from the pool and selects a sampled candidate with maximal score.  If several sampled positions tie for maximal score, the selector breaks ties uniformly among tied sampled positions.
+Let a finite pool contain $m$ candidates.  Candidate $i$ has model score $\score_i$ and evaluator utility $\utility_i$.  The candidate-budget selector draws \(N\) candidates independently with replacement from the pool and selects a sampled candidate with maximal score.  If several sampled positions tie for maximal score, the selector breaks ties uniformly among tied sampled positions.
 
-\begin{theorem}[finite tie-aware \bestn{} law]
+\begin{theorem}[finite tie-aware top-score law]
 \label{thm:law}
 Partition the pool into exact score-tie groups $g$, ordered from highest score to lowest score.  Let $k_g$ be the number of candidates in group $g$, let $b_g$ be the number of candidates with lower score than group $g$, and let $\bar{\utility}_g$ be the mean utility in group $g$.  Then
 \begin{equation}
@@ -65,7 +64,7 @@ Partition the pool into exact score-tie groups $g$, ordered from highest score t
 \end{equation}
 \end{theorem}
 
-The theorem is independent of graph physics.  It says that \bestn{} shifts probability mass toward score-tie groups in the score tail.  If those groups have lower mean evaluator utility, larger $N$ can hurt utility or leave an oracle gap even as selected score rises.  In the artifact, the theorem is implemented in \texttt{src/graph\_physics\_best\_of\_n/theory.py}, tested in \texttt{tests/test\_theory.py}, and validated in \texttt{results/tables/exact\_law\_validation.csv}.
+The theorem is independent of graph physics.  It says that candidate-budget selection shifts probability mass toward score-tie groups in the high-score tail.  If those groups have lower mean evaluator utility, larger $N$ can hurt utility or leave an oracle gap even as selected score rises.  The repository includes the implementation, tests, and exact-law validation table.
 
 \section{Graph-Physics Stress Suite}
 
@@ -137,7 +136,7 @@ Learned-safe hard-case oracle-gap closure & 0.588 \\
 \begin{center}
 \includegraphics[width=0.96\linewidth]{../../figures/figure1_selected_tail_failure.png}
 \end{center}
-\caption{selected-tail failure in the synthetic suite.  Raw \bestn{} selection raises the internal score tail while true utility remains below the oracle tail in controlled graph-physics conditions.}
+\caption{constraint-shadow failure in the synthetic suite.  Raw top-score selection raises the internal score tail while true utility remains below the oracle tail in controlled graph-physics conditions.}
 \label{fig:tail}
 \end{figure}
 
@@ -202,7 +201,7 @@ The final run summary is \texttt{results/run\_summary.json}.  The primary aggreg
 
 \section{Selector Formulas}
 
-The selector coefficients are fixed in \texttt{src/graph\_physics\_best\_of\_n/selection.py}.  The hidden-risk proxy is
+The selector coefficients are fixed in the source package.  The hidden-risk proxy is
 \[
 R_{\mathrm{hidden}} =
 V_{\mathrm{edge}} + 0.30\|a\| + 0.35\max(0,\Delta_{\mathrm{cal}}).

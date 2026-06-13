@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 
-from graph_physics_best_of_n.learned_model import candidate_row, fit_ridge, predict
+from graph_constraint_tail_audit.learned_model import candidate_row, fit_ridge, predict
 
 
 def test_learned_lite_ridge_outputs_finite_predictions():

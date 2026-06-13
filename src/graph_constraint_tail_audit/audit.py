@@ -14,7 +14,7 @@ FORBIDDEN_SUPPORTED_PATTERNS = (
     "state of the art",
     "broad benchmark superiority",
     "universal improvement",
-    "universal best-of-n",
+    "universal score-tail selection",
     "proves deployment",
 )
 
@@ -23,9 +23,9 @@ def claim_inventory() -> list[dict[str, str]]:
     return [
         {
             "id": "C1",
-            "claim": "Exact finite tie-aware Best-of-N laws predict selected utility on finite graph-physics candidate pools.",
+            "claim": "Exact finite score-tie laws predict selected utility on finite graph-physics candidate pools.",
             "status": "supported",
-            "evidence": "src/graph_physics_best_of_n/theory.py, tests/test_theory.py, results/tables/exact_law_validation.csv, and figures/figure3_exact_law_validation.png",
+            "evidence": "src/graph_constraint_tail_audit/theory.py, tests/test_theory.py, results/tables/exact_law_validation.csv, and figures/figure3_exact_law_validation.png",
         },
         {
             "id": "C2",
@@ -37,7 +37,7 @@ def claim_inventory() -> list[dict[str, str]]:
             "id": "C3",
             "claim": "Observed-energy, action, calibration-gap, constraint-probe, and combined-repair ablations explain which risk controls recover selected-tail utility.",
             "status": "supported",
-            "evidence": "src/graph_physics_best_of_n/selection.py, results/tables/ablation_metrics.csv, results/tables/repair_metrics.csv, results/tables/statistical_tests.csv, figures/figure5_ablation_components.png, and figures/figure8_oracle_gap_closure.png",
+            "evidence": "src/graph_constraint_tail_audit/selection.py, results/tables/ablation_metrics.csv, results/tables/repair_metrics.csv, results/tables/statistical_tests.csv, figures/figure5_ablation_components.png, and figures/figure8_oracle_gap_closure.png",
         },
         {
             "id": "C4",
@@ -49,13 +49,13 @@ def claim_inventory() -> list[dict[str, str]]:
             "id": "C5",
             "claim": "A CPU NumPy learned-lite calibrator improves rank alignment between candidate scores and real utility on held-out synthetic graph conditions.",
             "status": "supported",
-            "evidence": "src/graph_physics_best_of_n/learned_model.py, results/tables/learned_model_metrics.csv, results/tables/learned_model_predictions.csv, and figures/figure7_learned_model.png",
+            "evidence": "src/graph_constraint_tail_audit/learned_model.py, results/tables/learned_model_metrics.csv, results/tables/learned_model_predictions.csv, and figures/figure7_learned_model.png",
         },
         {
             "id": "C6",
             "claim": "The evidence spans multiple graph families, hidden-failure modes, and stress levels inside a CPU-local synthetic benchmark.",
             "status": "supported",
-            "evidence": "src/graph_physics_best_of_n/graph_physics.py, results/tables/stress_metrics.csv, figures/figure10_family_robustness.png, and results/run_summary.json",
+            "evidence": "src/graph_constraint_tail_audit/graph_physics.py, results/tables/stress_metrics.csv, figures/figure10_family_robustness.png, and results/run_summary.json",
         },
         {
             "id": "C7",
@@ -210,7 +210,7 @@ def write_final_audit(root: str | Path, command_results: dict[str, str] | None =
             "- Learned-safe hard-case oracle-gap closure: 0.5877721836857546.",
             "",
             "## Differentiation",
-            "The repo reuses only the finite Best-of-N law pattern. The scientific object is graph-structured toy physics: observed springs, hidden constraints, graph-energy checks, calibration gaps, learned-lite score calibration, and adaptive high-N gating.",
+            "The finite score-tie law is support machinery, not the paper identity. The scientific object is graph-structured toy physics: observed springs, hidden constraints, graph-energy checks, calibration gaps, learned-lite score calibration, and adaptive high-N gating.",
             "It is not a real-robot evaluation, not a broad external benchmark, and not a claim that increasing N always helps.",
             "",
             "## Remaining Limits",
