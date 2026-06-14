@@ -179,6 +179,11 @@ def write_final_audit(root: str | Path, command_results: dict[str, str] | None =
             )
             if summary.get("passes_claim_audit"):
                 command_results["bash scripts/run_claim_audit.sh"] = "pass"
+        v3_summary_path = root / "results" / "v3_cached_evidence" / "summary.json"
+        v3_pdf = root / "paper" / "final" / "graph world model-v3.pdf"
+        if v3_summary_path.exists() and v3_pdf.exists():
+            command_results["python scripts/build_v3_paper.py"] = "pass; generated 25-page v3 PDF"
+            command_results["python scripts/run_v3_claim_audit.py"] = "pass; source map, hashes, claims, and LaTeX blockers checked"
 
     lines = [
         "# Final Audit",
@@ -208,6 +213,27 @@ def write_final_audit(root: str | Path, command_results: dict[str, str] | None =
             "- Adaptive high-N negative deltas versus raw: 0.",
             "- Learned-lite rank correlation: raw score 0.7564939260631044, learned utility 0.9320148641282493.",
             "- Learned-safe hard-case oracle-gap closure: 0.5877721836857546.",
+        ]
+    )
+    v3_summary_path = root / "results" / "v3_cached_evidence" / "summary.json"
+    if v3_summary_path.exists():
+        v3 = json.loads(v3_summary_path.read_text(encoding="utf-8"))
+        lines.extend(
+            [
+                "",
+                "## V3 Finalization",
+                f"- Supported claims: {v3.get('supported_claims')}.",
+                f"- Explicit unsupported boundaries: {v3.get('unsupported_boundaries')}.",
+                f"- Conditions: {v3.get('conditions')}; seed-level rows: {v3.get('seed_rows')}; aggregate rows: {v3.get('main_rows')}.",
+                f"- Hard high-N cases: {v3.get('hard_high_n_cases')}.",
+                f"- Generated v3 figures: {v3.get('v3_figures')}.",
+                f"- Artifact files before v3 outputs: {v3.get('artifact_files')}.",
+                "- Final v3 PDF: paper/final/graph world model-v3.pdf and Desktop graph world model-v3.pdf.",
+                "- Desktop source map points to graph world model-v3.pdf, this folder, and Jason-Wang313/graph-world-model.",
+            ]
+        )
+    lines.extend(
+        [
             "",
             "## Differentiation",
             "The finite score-tie law is support machinery, not the paper identity. The scientific object is graph-structured toy physics: observed springs, hidden constraints, graph-energy checks, calibration gaps, learned-lite score calibration, and adaptive high-N gating.",

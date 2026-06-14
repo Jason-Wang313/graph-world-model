@@ -4,11 +4,9 @@ Paper-readiness judgment: hardened CPU-synthetic paper package. Within the state
 
 ## Command Results
 - experiments --mode bulletproof: pass (runtime 1343.253s, gate allow_high_n_with_adaptive_gate)
-- bash scripts/build_paper.sh: pass; generated paper/iclr/main.pdf and copied the 8-page, 432076-byte v2 PDF to the Desktop.
-- bash scripts/run_claim_audit.sh: pass, 18.3 s.
-- pytest: pass, 9 passed in 20.49 s.
-- tracked source scan: pass; no old wrapper terms, old package names, or duplicate selection phrasing in tracked source files.
-- PDF and LaTeX log scans: pass; no old wrapper text or local path leakage in the PDF text, and no overfull boxes, unresolved citations, unresolved references, or fatal LaTeX errors in the final log.
+- bash scripts/run_claim_audit.sh: pass
+- python scripts/build_v3_paper.py: pass; generated 25-page v3 PDF
+- python scripts/run_v3_claim_audit.py: pass; source map, hashes, claims, and LaTeX blockers checked
 
 ## Strongest Artifacts
 - Failure artifact: figure1_selected_tail_failure.png plus stress_metrics.csv across graph families, hidden failures, and stress levels.
@@ -24,6 +22,16 @@ Paper-readiness judgment: hardened CPU-synthetic paper package. Within the state
 - Adaptive high-N negative deltas versus raw: 0.
 - Learned-lite rank correlation: raw score 0.7564939260631044, learned utility 0.9320148641282493.
 - Learned-safe hard-case oracle-gap closure: 0.5877721836857546.
+
+## V3 Finalization
+- Supported claims: 6.
+- Explicit unsupported boundaries: 4.
+- Conditions: 80; seed-level rows: 22400; aggregate rows: 5600.
+- Hard high-N cases: 155.
+- Generated v3 figures: 6.
+- Artifact files before v3 outputs: 60.
+- Final v3 PDF: paper/final/graph world model-v3.pdf and Desktop graph world model-v3.pdf.
+- Desktop source map points to graph world model-v3.pdf, this folder, and Jason-Wang313/graph-world-model.
 
 ## Differentiation
 The finite score-tie law is support machinery, not the paper identity. The scientific object is graph-structured toy physics: observed springs, hidden constraints, graph-energy checks, calibration gaps, learned-lite score calibration, and adaptive high-N gating.

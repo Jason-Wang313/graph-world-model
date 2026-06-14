@@ -1,0 +1,10 @@
+metric,value
+train_rows,4800
+test_rows,4800
+raw_score_rank_correlation,0.7564939260631044
+learned_utility_rank_correlation,0.9320148641282493
+mean_raw_selected_utility,-0.17121298986605232
+mean_learned_safe_selected_utility,-0.16336978813453154
+mean_oracle_selected_utility,-0.1620759492523121
+hard_case_safe_gap_closed,0.5877721836857546
+safe_negative_delta_rate,0.02666666666666667
