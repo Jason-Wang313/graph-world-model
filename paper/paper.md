@@ -504,18 +504,25 @@ Supported claims:
   stress levels inside a CPU-local synthetic benchmark.
   Evidence: `results/tables/stress_metrics.csv`,
   `figures/figure10_family_robustness.png`, and `results/run_summary.json`.
+- C7: the v4 audit adds recognized graph-dynamics protocol probes for spring
+  interaction networks, latent-edge inference, long-horizon graph simulation,
+  chain rest-length shift, and random-geometric damping.
+  Evidence: `results/v4_frozen_evidence/v4_benchmark_protocol_bridge.csv`,
+  `results/v4_frozen_evidence/v4_cell_gate_matrix.csv`, and
+  `results/figures/v4/v4_benchmark_protocol_bridge.pdf`.
 
 Unsupported claims:
 
-- C7: real-robot validation.
+- C8: real-robot validation.
   Evidence: no real-robot experiment artifact is present.
-- C8: broad benchmark superiority or state-of-the-art physics-model
+- C9: broad benchmark superiority or state-of-the-art physics-model
   performance.
-  Evidence: no external benchmark suite is present.
-- C9: universal improvement from increasing `N`.
+  Evidence: v4 adds recognized graph-dynamics probes, but no external held-out
+  dataset or reproduced SOTA baseline is present.
+- C10: universal improvement from increasing `N`.
   Evidence: the manuscript studies selected-tail risk, not a universal
   monotonic-improvement theorem.
-- C10: deployment safety beyond the controlled synthetic setting.
+- C11: deployment safety beyond the controlled synthetic setting.
   Evidence: adaptive gating is pilot-label synthetic evidence only.
 
 ## Conclusion

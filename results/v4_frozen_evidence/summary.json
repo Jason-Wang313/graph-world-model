@@ -1,10 +1,17 @@
 {
+  "adaptive_nonworse_cells": 75,
   "all_adaptive_ci_high": 0.008930559116783959,
   "all_adaptive_ci_low": 0.005287485616096714,
   "all_adaptive_gain": 0.0070089879759587,
   "artifact_files": 60,
+  "benchmark_protocol_pass_rows": 5,
+  "benchmark_protocol_rows": 5,
+  "cell_gate_rows": 75,
+  "claim_gates_passed": 10,
+  "claim_gates_total": 10,
   "claim_map_entries": 10,
   "combined_repair_gain": 0.0059377122012985025,
+  "compute_frontier_rows": 7,
   "conditions": 80,
   "exact_law_mean_absolute_error": 0.0013411999207230887,
   "exact_law_rows": 140,
@@ -20,8 +27,10 @@
   "learned_safe_negative_delta_rate": 0.02666666666666667,
   "learned_utility_rank": 0.9320148641282493,
   "main_rows": 5600,
+  "raw_positive_regret_cells": 60,
   "seed_rows": 22400,
-  "supported_claims": 6,
+  "supported_claims": 7,
+  "topology_holdout_rows": 5,
   "unsupported_boundaries": 4,
-  "v3_figures": 6
+  "v4_figures": 9
 }

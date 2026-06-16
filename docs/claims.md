@@ -87,22 +87,39 @@ Evidence:
 - `figures/figure10_family_robustness.png`
 - `results/run_summary.json`
 
+### C7: V4 graph-dynamics probe bridge
+
+The v4 audit adds recognized graph-dynamics protocol probes for spring
+interaction networks, latent-edge inference, long-horizon graph simulation,
+chain rest-length shift, and random-geometric damping.
+
+Evidence:
+
+- `results/v4_frozen_evidence/v4_benchmark_protocol_bridge.csv`
+- `results/v4_frozen_evidence/v4_cell_gate_matrix.csv`
+- `results/v4_frozen_evidence/v4_claim_gates.csv`
+- `results/figures/v4/v4_benchmark_protocol_bridge.pdf`
+
+Caveat: these are standardized graph-dynamics probes inside this artifact, not
+external held-out datasets or reproduced SOTA baselines.
+
 ## Unsupported
 
-### C7: Real-system validation
+### C8: Real-system validation
 
 The method is validated on real robot systems.
 
 Evidence status: unsupported. No real-robot experiments are present.
 
-### C8: Broad external benchmark superiority
+### C9: Broad external benchmark superiority
 
 The method establishes broad benchmark superiority or state-of-the-art
 physics-model performance.
 
-Evidence status: unsupported. No broad external benchmark suite is present.
+Evidence status: unsupported. V4 adds recognized graph-dynamics probes, but no
+external held-out dataset or reproduced SOTA baseline is present.
 
-### C9: Universal high-`N` improvement
+### C10: Universal high-`N` improvement
 
 Increasing `N` universally improves selected real utility.
 
@@ -110,7 +127,7 @@ Evidence status: unsupported. The repository studies selected-tail risk and
 repairs in controlled graph worlds, not a universal monotonic-improvement
 claim.
 
-### C10: Deployment safety
+### C11: Deployment safety
 
 The adaptive gate proves deployment safety beyond the controlled synthetic
 setting.

@@ -1,0 +1,11 @@
+gate,observed,threshold,pass
+claim_audit_supported,7,7,True
+explicit_boundaries,4,4,True
+stress_cell_count,75,75,True
+raw_positive_regret_cells,60,60,True
+adaptive_nonworse_cells,75,75,True
+benchmark_protocol_rows,5,5,True
+benchmark_protocol_pass_rows,5,4,True
+adaptive_mean_gain,0.0070089879759587,0.006,True
+hard_case_ci_positive,0.011194679545615097,0.0,True
+learned_rank_alignment,0.9320148641282493,0.9,True

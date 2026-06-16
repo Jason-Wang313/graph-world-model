@@ -30,22 +30,27 @@ The evidence spans multiple graph families, hidden-failure modes, and stress lev
 
 Evidence: src/graph_constraint_tail_audit/graph_physics.py, results/tables/stress_metrics.csv, figures/figure10_family_robustness.png, and results/run_summary.json
 
-## C7: unsupported
+## C7: supported
+The v4 audit adds recognized graph-dynamics protocol probes for spring interaction networks, latent-edge inference, long-horizon graph simulation, chain rest-length shift, and random-geometric damping.
+
+Evidence: results/v4_frozen_evidence/v4_benchmark_protocol_bridge.csv, results/v4_frozen_evidence/v4_cell_gate_matrix.csv, and results/figures/v4/v4_benchmark_protocol_bridge.pdf
+
+## C8: unsupported
 The method is validated on real robot systems.
 
 Evidence: no real-robot experiments are present
 
-## C8: unsupported
+## C9: unsupported
 The method establishes broad benchmark superiority or state-of-the-art physics-model performance.
 
-Evidence: no broad external benchmark suite is present
+Evidence: v4 adds recognized graph-dynamics probes, but no external held-out dataset or reproduced SOTA baseline is present
 
-## C9: unsupported
+## C10: unsupported
 Increasing N universally improves selected real utility.
 
 Evidence: the repository studies selected-tail risk, not a universal monotonic-improvement claim
 
-## C10: unsupported
+## C11: unsupported
 The adaptive gate proves deployment safety beyond the controlled synthetic setting.
 
 Evidence: the adaptive gate is explicitly pilot-label and synthetic

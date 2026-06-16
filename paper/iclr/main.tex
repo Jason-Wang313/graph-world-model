@@ -9,14 +9,15 @@
 \usepackage{booktabs}
 \usepackage{graphicx}
 \usepackage{url}
-\usepackage[hidelinks]{hyperref}
+\usepackage{xcolor}
+\usepackage[colorlinks=true,citecolor=green!45!black,linkcolor=blue!55!black,urlcolor=blue!55!black]{hyperref}
 
 \newtheorem{theorem}{Theorem}
 \newcommand{\utility}{U}
 \newcommand{\score}{S}
 \newcommand{\selected}{\mathrm{sel}}
-\graphicspath{{../../figures/}{../../results/figures/v3/}}
-\input{v3_results_macros.tex}
+\graphicspath{{../../figures/}{../../results/figures/v4/}}
+\input{v4_results_macros.tex}
 
 \title{Constraint Shadows in Graph World Models}
 
@@ -28,7 +29,7 @@
 \maketitle
 
 \begin{abstract}
-When an imagined graph scores its own candidate futures, inference can optimize a constraint shadow: the future that best satisfies the model's visible graph need not satisfy the true constraint system.  We study this failure mode in a CPU-local synthetic graph-physics suite where an imagined mass-spring graph scores rollouts and a separate true graph evaluates utility.  We prove an exact finite-pool, tie-aware law for top-score candidate selection, validate it empirically with mean absolute error $0.001341$, and audit graph-energy, action, calibration-gap, constraint-probe, combined-repair, adaptive-gating, and learned-lite calibration controls.  At $N=64$, adaptive gating improves selected real utility over raw selection by $0.00701$ on 320 paired cases and by $0.01447$ on 155 hard cases, with zero negative deltas in this audit.  The evidence is deliberately narrow: synthetic graph physics only, no real-robot validation, no external simulator benchmark, and no claim that larger $N$ universally improves deployed behavior.
+When an imagined graph scores its own candidate futures, inference can optimize a constraint shadow: the future that best satisfies the model's visible graph need not satisfy the true constraint system.  We study this failure mode in a CPU-local graph-physics suite where an imagined mass-spring graph scores rollouts and a separate true graph evaluates utility.  We prove an exact finite-pool, tie-aware law for top-score candidate selection, validate it empirically with mean absolute error \VFourGraphExactError{}, and audit graph-energy, action, calibration-gap, constraint-probe, combined-repair, adaptive-gating, learned-lite calibration, and v4 benchmark-protocol probes.  At $N=64$, adaptive gating improves selected real utility over raw selection by \VFourGraphAllAdaptiveGain{} on 320 paired cases and by \VFourGraphHardAdaptiveGain{} on \VFourGraphHardCases{} hard cases; it is non-worse in \VFourGraphAdaptiveNonworseCells{}/\VFourGraphCellRows{} aggregate stress cells.  The evidence is deliberately scoped: v4 adds recognized graph-dynamics probes, but still makes no real-robot, external-dataset, SOTA, or universal high-\(N\) claim.
 \end{abstract}
 
 \section{Introduction}
@@ -37,9 +38,9 @@ Increasing the candidate budget in a graph-world controller is often described a
 
 Graph-structured world models make this question concrete.  A graph simulator can encode object relations, springs, contacts, or inferred interactions, but the graph used for imagination can omit edges, shift rest lengths, alias topology, understate damping, or drift over horizon.  Then the model score may improve because a trajectory exploits the imagined graph, while the executed utility remains below the oracle tail under the true graph.
 
-This paper makes a narrow claim.  In controlled CPU-local synthetic graph physics, raw high-$N$ selection exposes a measurable score/utility tail mismatch, and simple auditable repairs reduce that mismatch in the same suite.  We do not claim real-robot validation, broad benchmark superiority, state-of-the-art physics modeling, or deployment safety.  The contribution is an inspectable stress test and claim audit for a particular failure mechanism.
+This paper makes a narrow claim.  In controlled CPU-local graph physics, raw high-$N$ selection exposes a measurable score/utility tail mismatch, and simple auditable repairs reduce that mismatch in the same suite.  V4 adds a recognized graph-dynamics protocol bridge over spring interaction networks, latent-edge inference, long-horizon graph simulation, chain rest-length shift, and random-geometric damping probes.  We do not claim real-robot validation, broad external-dataset superiority, reproduced SOTA physics modeling, or deployment safety.  The contribution is an inspectable stress test and claim audit for a particular graph-world-model failure mechanism.
 
-The paper contributes: (1) an exact finite-pool law for tie-aware top-score selection; (2) a graph-physics stress suite over five graph families, five hidden failures, and three stress levels; (3) selector, repair, adaptive-gate, and learned-lite calibration audits tied to CSV artifacts; and (4) an explicit limitation and reproducibility record.
+The paper contributes: (1) an exact finite-pool law for tie-aware top-score selection; (2) a graph-physics stress suite over five graph families, five hidden failures, and three stress levels; (3) selector, repair, adaptive-gate, learned-lite calibration, and graph-dynamics protocol audits tied to CSV artifacts; and (4) a frozen v4 claim-gate ledger that fails if promoted claims outrun the evidence.
 
 \section{Related Work}
 
@@ -170,9 +171,9 @@ At $N=64$, combined repair improves selected real utility over raw by $0.00594$ 
 
 The learned-lite calibration result is similarly scoped.  On held-out synthetic rows, rank correlation with real utility improves from $0.75649$ for raw score to $0.93201$ for learned utility.  The mean selected utility changes from $-0.17121$ for raw to $-0.16337$ for learned-safe, compared with oracle $-0.16208$, and learned-safe closes $0.58777$ of the hard-case oracle gap.  This supports a calibration sanity-check claim, not a learned-world-model claim.
 
-\section{V3 Evidence Audit: Constraint Shadows, Not Generic Selection}
+\section{V4 Evidence Audit: Constraint Shadows, Not Generic Selection}
 
-The v3 revision treats the graph structure as the scientific object.  The finite
+The V4 revision treats the graph structure as the scientific object.  The finite
 law is a measurement tool: it predicts how finite candidate pools concentrate
 probability mass in high-score groups.  The paper's identity is the audited
 constraint shadow that appears when the imagined graph scores futures with
@@ -181,42 +182,87 @@ lengths, damping delays, topology aliases, and horizon drift.  A reviewer should
 therefore attack the paper as a graph-world-model artifact, not as a generic
 selection theorem wrapped around another domain.
 
-The v3 cache reads only committed CSV/JSON artifacts.  It does not rerun the
+The V4 cache reads only committed CSV/JSON artifacts.  It does not rerun the
 long synthetic generator during manuscript compilation.  This keeps normal
 verification memory-light while preserving the stronger experiment surface from
-the bulletproof run: \VThreeGraphConditions{} conditions,
-\VThreeGraphSeedRows{} seed-level selector rows, \VThreeGraphMainRows{}
-aggregate rows, \VThreeGraphFamilies{} graph families, and
-\VThreeGraphHiddenFailures{} hidden-failure modes.  The evidence layer exports
-\VThreeGraphFigures{} additional figures, a claim inventory, a constraint-shadow
+the bulletproof run: \VFourGraphConditions{} conditions,
+\VFourGraphSeedRows{} seed-level selector rows, \VFourGraphMainRows{}
+aggregate rows, \VFourGraphFamilies{} graph families, and
+\VFourGraphHiddenFailures{} hidden-failure modes.  The evidence layer exports
+\VFourGraphFigures{} additional figures, a claim inventory, a constraint-shadow
 matrix, repair and gate summaries, learned-calibration summaries, family
 robustness summaries, and an artifact inventory.
 
 \begin{table}[t]
-\caption{v3 audit surface.  These values are generated from committed artifacts
-by \texttt{experiments/v3\_cached\_evidence.py}.}
-\label{tab:v3-audit-surface}
+\caption{V4 audit surface.  These values are generated from committed artifacts
+by \texttt{experiments/v4\_frozen\_evidence.py}.}
+\label{tab:V4-audit-surface}
 \begin{center}
 \small
 \begin{tabular}{@{}p{0.70\linewidth}r@{}}
 \toprule
 Audit quantity & Value \\
 \midrule
-Supported promoted claims & \VThreeGraphSupportedClaims{} \\
-Explicit unsupported boundaries & \VThreeGraphUnsupportedBoundaries{} \\
-Graph-physics conditions & \VThreeGraphConditions{} \\
-Seed-level selector rows & \VThreeGraphSeedRows{} \\
-Aggregate rows & \VThreeGraphMainRows{} \\
-Hard high-\(N\) cases & \VThreeGraphHardCases{} \\
-Exact-law mean absolute error & \VThreeGraphExactError{} \\
-Artifact files before v3 outputs & \VThreeGraphArtifactFiles{} \\
-Generated v3 figures & \VThreeGraphFigures{} \\
+Supported promoted claims & \VFourGraphSupportedClaims{} \\
+Explicit unsupported boundaries & \VFourGraphUnsupportedBoundaries{} \\
+Graph-physics conditions & \VFourGraphConditions{} \\
+Seed-level selector rows & \VFourGraphSeedRows{} \\
+Aggregate rows & \VFourGraphMainRows{} \\
+Hard high-\(N\) cases & \VFourGraphHardCases{} \\
+Exact-law mean absolute error & \VFourGraphExactError{} \\
+Artifact files before V4 outputs & \VFourGraphArtifactFiles{} \\
+Generated V4 figures & \VFourGraphFigures{} \\
+Frozen claim gates & \VFourGraphClaimGatesPassed{}/\VFourGraphClaimGatesTotal{} \\
+Cell-level stress gates & \VFourGraphAdaptiveNonworseCells{}/\VFourGraphCellRows{} non-worse \\
+Raw positive-regret cells & \VFourGraphRawPositiveCells{}/\VFourGraphCellRows{} \\
+Benchmark-protocol probes & \VFourGraphBenchmarkPassRows{}/\VFourGraphBenchmarkRows{} pass \\
 \bottomrule
 \end{tabular}
 \end{center}
 \end{table}
 
-Figure~\ref{fig:v3-shadow} is the primary non-duplicate figure.  It does not
+V4 adds a benchmark-protocol bridge that is deliberately more honest than a
+SOTA claim.  The rows are not external held-out datasets; they are standardized
+graph-dynamics probes aligned with Interaction Network springs, Neural
+Relational Inference latent-edge stress, Graph Network Simulator long-horizon
+rollouts, rest-length shifts in chains, and random-geometric damping.  The goal
+is to ask whether the same constraint-shadow audit produces a failure signal
+and a non-worsening adaptive response under recognizable graph-dynamics
+protocols.  The bridge is useful evidence, but it does not replace external
+datasets or reproduced learned-simulator baselines.
+
+\begin{figure}[t]
+\begin{center}
+\includegraphics[width=0.95\linewidth]{v4_benchmark_protocol_bridge.pdf}
+\end{center}
+\caption{V4 benchmark-protocol bridge.  The figure reports raw and adaptive
+\(N=64\) oracle regret for five recognized graph-dynamics probes.  Lower is
+better; oracle remains an analysis upper bound, not a deployable selector.}
+\label{fig:v4-benchmark-bridge}
+\end{figure}
+
+\begin{figure}[t]
+\begin{center}
+\includegraphics[width=0.92\linewidth]{v4_compute_frontier.pdf}
+\end{center}
+\caption{V4 compute frontier.  Increasing candidate budget can expose hidden
+constraint energy and oracle regret under raw selection; adaptive gating reduces
+the aggregate regret curve without claiming external deployment safety.}
+\label{fig:v4-compute-frontier}
+\end{figure}
+
+\begin{figure}[t]
+\begin{center}
+\includegraphics[width=0.92\linewidth]{v4_claim_gates.pdf}
+\end{center}
+\caption{Frozen v4 claim gates.  The audit requires supported claims, explicit
+boundaries, stress-cell coverage, benchmark-protocol probes, positive paired
+deltas, learned rank alignment, and all aggregate adaptive cells to be
+non-worse.}
+\label{fig:v4-claim-gates}
+\end{figure}
+
+Figure~\ref{fig:V4-shadow} is the primary non-duplicate figure.  It does not
 ask whether a larger candidate budget is good or bad in the abstract.  It asks
 where a raw graph-score selector leaves oracle utility on the table at \(N=64\)
 when graph family and hidden constraint class are crossed.  The table is a
@@ -228,38 +274,38 @@ not external validity.
 
 \begin{figure}[t]
 \begin{center}
-\includegraphics[width=0.94\linewidth]{v3_constraint_shadow_matrix.pdf}
+\includegraphics[width=0.94\linewidth]{v4_constraint_shadow_matrix.pdf}
 \end{center}
-\caption{v3 constraint-shadow matrix.  Each cell reports the mean raw \(N=64\)
+\caption{V4 constraint-shadow matrix.  Each cell reports the mean raw \(N=64\)
 oracle regret for a graph family and hidden-failure mode in the stress suite.}
-\label{fig:v3-shadow}
+\label{fig:V4-shadow}
 \end{figure}
 
 The repair audit is deliberately separated from the failure audit.  A paper can
 show a real failure mode and still overclaim if the repair evidence is weak.
-V3 therefore treats repair as a paired high-\(N\) question.  Combined repair
-improves selected utility over raw by \VThreeGraphCombinedGain{} on all paired
+V4 therefore treats repair as a paired high-\(N\) question.  Combined repair
+improves selected utility over raw by \VFourGraphCombinedGain{} on all paired
 high-\(N\) cases.  The pilot-label adaptive gate improves by
-\VThreeGraphAllAdaptiveGain{} with 95\% interval
-[\VThreeGraphAllAdaptiveLow{}, \VThreeGraphAllAdaptiveHigh{}] on all paired
-cases, and by \VThreeGraphHardAdaptiveGain{} with interval
-[\VThreeGraphHardAdaptiveLow{}, \VThreeGraphHardAdaptiveHigh{}] on the hard
+\VFourGraphAllAdaptiveGain{} with 95\% interval
+[\VFourGraphAllAdaptiveLow{}, \VFourGraphAllAdaptiveHigh{}] on all paired
+cases, and by \VFourGraphHardAdaptiveGain{} with interval
+[\VFourGraphHardAdaptiveLow{}, \VFourGraphHardAdaptiveHigh{}] on the hard
 oracle-gap subset.  This is evidence for an audit control inside this suite,
 not for deployment safety.
 
 \begin{figure}[t]
 \begin{center}
-\includegraphics[width=0.94\linewidth]{v3_repair_gate_delta.pdf}
+\includegraphics[width=0.94\linewidth]{v4_repair_gate_delta.pdf}
 \end{center}
-\caption{v3 repair and gate deltas.  The plot separates all \(N=64\) paired
+\caption{V4 repair and gate deltas.  The plot separates all \(N=64\) paired
 cases from hard cases where raw selection leaves a nontrivial oracle gap.}
-\label{fig:v3-repair-gate}
+\label{fig:V4-repair-gate}
 \end{figure}
 
 The learned-lite result is similarly constrained.  The learned utility regressor
-raises rank alignment from \VThreeGraphRawRank{} to
-\VThreeGraphLearnedRank{} on held-out synthetic rows, and the learned-safe rule
-closes \VThreeGraphSafeGapClosed{} of the hard-case oracle gap.  This matters
+raises rank alignment from \VFourGraphRawRank{} to
+\VFourGraphLearnedRank{} on held-out synthetic rows, and the learned-safe rule
+closes \VFourGraphSafeGapClosed{} of the hard-case oracle gap.  This matters
 because it tests whether graph-score errors are at least partially diagnosable
 from candidate features, graph family, hidden-failure labels, and stress labels.
 It does not show that a large neural simulator will discover missing constraints
@@ -267,45 +313,45 @@ in the wild.
 
 \begin{figure}[t]
 \begin{center}
-\includegraphics[width=0.88\linewidth]{v3_learned_calibration.pdf}
+\includegraphics[width=0.88\linewidth]{v4_learned_calibration.pdf}
 \end{center}
-\caption{v3 learned-lite calibration audit.  The left panel compares held-out
+\caption{V4 learned-lite calibration audit.  The left panel compares held-out
 rank alignment; the right panel compares selected utility for raw,
 learned-safe, and oracle selectors.}
-\label{fig:v3-learned}
+\label{fig:V4-learned}
 \end{figure}
 
 The claim boundary is part of the contribution.  The paper supports exact
 finite-pool accounting, controlled selected-tail failure, repair/gate evidence,
 learned-lite calibration, and synthetic coverage.  It explicitly does not
 support real-system validation, external benchmark superiority, universal
-high-\(N\) improvement, or deployment safety.  V3 makes those boundaries visible
+high-\(N\) improvement, or deployment safety.  V4 makes those boundaries visible
 in the manuscript, machine-readable in the claim files, and enforced by the
 post-build audit.
 
 \begin{figure}[t]
 \begin{center}
 \begin{minipage}{0.48\linewidth}
-\includegraphics[width=\linewidth]{v3_claim_boundary_inventory.pdf}
+\includegraphics[width=\linewidth]{v4_claim_boundary_inventory.pdf}
 \end{minipage}
 \hfill
 \begin{minipage}{0.48\linewidth}
-\includegraphics[width=\linewidth]{v3_artifact_surface.pdf}
+\includegraphics[width=\linewidth]{v4_artifact_surface.pdf}
 \end{minipage}
 \end{center}
-\caption{v3 claim and artifact audit.  Left: supported claims versus explicit
-unsupported boundaries.  Right: artifact surface by file category before v3
+\caption{V4 claim and artifact audit.  Left: supported claims versus explicit
+unsupported boundaries.  Right: artifact surface by file category before V4
 outputs are added.}
-\label{fig:v3-boundaries}
+\label{fig:V4-boundaries}
 \end{figure}
 
 \begin{figure}[t]
 \begin{center}
-\includegraphics[width=0.86\linewidth]{v3_family_robustness.pdf}
+\includegraphics[width=0.86\linewidth]{v4_family_robustness.pdf}
 \end{center}
-\caption{v3 family robustness audit.  Mean raw \(N=64\) oracle regret remains a
+\caption{V4 family robustness audit.  Mean raw \(N=64\) oracle regret remains a
 graph-family-dependent stress quantity, not a single cherry-picked failure.}
-\label{fig:v3-family}
+\label{fig:V4-family}
 \end{figure}
 
 \section{Limitations}
@@ -367,9 +413,9 @@ The learned-lite component trains ridge regressors for real utility and hidden e
 
 The supported claims are: the finite law predicts selected utility on finite candidate pools; raw high-$N$ selection can expose selected-tail failure in controlled graph physics; repair and adaptive gating improve selected-tail behavior in this suite; learned-lite calibration improves held-out rank alignment in synthetic graph conditions; and the evidence spans multiple graph families, hidden failures, and stress levels.  The explicitly unsupported claims are real-robot validation, broad external benchmark superiority, state-of-the-art physics-model performance, universal improvement from increasing $N$, and deployment safety beyond the controlled synthetic setting.  The machine-readable map is \texttt{results/claim\_evidence\_map.json}.
 
-\section{V3 Reviewer Attack Plan}
+\section{V4 Reviewer Attack Plan}
 
-The v3 plan starts from the harshest likely desk and reviewer objections.  The
+The V4 plan starts from the harshest likely desk and reviewer objections.  The
 first attack is duplication: a reviewer may suspect that the paper is a generic
 finite-selection wrapper reused across domains.  The response is structural,
 not rhetorical.  The title, abstract, experiments, figures, and appendix are
@@ -381,7 +427,7 @@ features, learned-lite calibration, and adaptive gate boundaries.
 
 The second attack is synthetic scope.  This attack is mostly correct.  The
 paper should lose if it implies real robots, external simulator coverage, or
-state-of-the-art world modeling.  V3 therefore makes synthetic scope part of
+state-of-the-art world modeling.  V4 therefore makes synthetic scope part of
 the claim rather than an afterthought.  The benefit of the synthetic suite is
 control: every hidden constraint and every score/utility mismatch is inspectable.
 The cost is external validity: the next tier would require MuJoCo-style
@@ -389,7 +435,7 @@ benchmarks, learned graph dynamics, or real system traces.  The paper is
 submission-ready only under that honest interpretation.
 
 The third attack is coefficient tuning.  The benchmark contains hand-coded
-repair coefficients and gate thresholds.  V3 answers by separating failure,
+repair coefficients and gate thresholds.  V4 answers by separating failure,
 repair, and calibration claims.  The failure claim does not depend on the gate
 working; it depends on raw high-score selection leaving oracle utility on the
 table under hidden constraints.  The repair claim is paired and scoped: the
@@ -398,8 +444,8 @@ pilot-label evidence.  A reviewer can dislike the repair as engineered without
 invalidating the constraint-shadow diagnosis.
 
 The fourth attack is statistical thinness.  The evidence is not thin in the
-local synthetic sense: it has \VThreeGraphSeedRows{} seed-level rows and
-\VThreeGraphConditions{} conditions.  But it is thin in external diversity.  V3
+local synthetic sense: it has \VFourGraphSeedRows{} seed-level rows and
+\VFourGraphConditions{} conditions.  But it is thin in external diversity.  V4
 does not hide this.  It reports exact-law error, paired confidence intervals,
 hard-case subsets, family/failure matrices, learned held-out rank alignment, and
 claim boundaries.  It does not pretend those artifacts are a replacement for
@@ -418,7 +464,7 @@ selector can optimize a constraint shadow.  The imagined graph rewards a future
 that satisfies visible constraints and shortcut terms; the true evaluator
 penalizes hidden edges, shifted lengths, delayed damping, topology aliases, and
 drift.  The claim is supported by stress tables, main metrics, the selected-tail
-figure, the hidden-energy figure, and the v3 constraint-shadow matrix.
+figure, the hidden-energy figure, and the V4 constraint-shadow matrix.
 
 Claim C3 is the repair decomposition claim.  It says that specific auditable
 controls have measurable roles inside this synthetic suite.  It does not say
@@ -477,12 +523,12 @@ score improvement and later utility.
 The stress levels are not used to claim monotonic severity.  They are used to
 test whether the same audit protocol survives mild, medium, and severe hidden
 constraints.  A strong paper should not depend on tuning one particular severity
-to make a figure pretty.  The v3 matrix therefore averages at \(N=64\) across
+to make a figure pretty.  The V4 matrix therefore averages at \(N=64\) across
 the stress suite and exposes graph-family and hidden-failure structure.
 
 \section{Why the Finite Law Is Support Machinery}
 
-The finite law is exact and useful, but v3 deliberately demotes it from paper
+The finite law is exact and useful, but V4 deliberately demotes it from paper
 identity to measurement machinery.  It has the same abstract shape in many
 selection problems: sort finite candidates by score, account for ties, and
 compute expected selected utility under repeated sampling.  If the paper were
@@ -526,7 +572,7 @@ repair tests whether these signals work better together than separately.
 The adaptive gate is a stronger but more fragile control.  It can decide not to
 use raw high-\(N\) selection when risk is high.  Its advantage is operational:
 it changes which selector is deployed.  Its weakness is informational: the gate
-uses pilot-label style evidence in the synthetic suite.  V3 presents it as a
+uses pilot-label style evidence in the synthetic suite.  V4 presents it as a
 diagnostic control, not a field-ready safety mechanism.
 
 \section{Negative Controls}
@@ -543,7 +589,7 @@ If a paragraph implies oracle availability, that paragraph should be revised.
 The third negative control is the learned-lite caveat.  The learned model has
 held-out synthetic evidence, but it is small and feature-based.  A reviewer
 should not accept any sentence that upgrades it into evidence for large neural
-world models.  V3 uses it to show diagnosability, not broad learning success.
+world models.  V4 uses it to show diagnosability, not broad learning success.
 
 The fourth negative control is external validity.  The paper repeatedly states
 that real robots and external benchmarks are absent.  This reduces rhetorical
@@ -553,22 +599,22 @@ overstated synthetic paper is easy to reject.
 \section{Statistical Rigor}
 
 The core paired comparisons use the high-\(N\) setting because the paper is
-about selected-tail behavior.  V3 reports both all paired cases and hard cases.
+about selected-tail behavior.  V4 reports both all paired cases and hard cases.
 All cases ask whether repair or gating helps across the full \(N=64\) audit
 surface.  Hard cases ask whether the same controls help when raw selection has
 a nontrivial oracle gap.
 
 The confidence intervals are bootstrap intervals from the generated statistical
-table.  V3 does not need a new statistical method; it needs clear reporting of
+table.  V4 does not need a new statistical method; it needs clear reporting of
 which population the interval describes.  The all-case adaptive gain is
-\VThreeGraphAllAdaptiveGain{} with lower endpoint \VThreeGraphAllAdaptiveLow{}.
-The hard-case gain is \VThreeGraphHardAdaptiveGain{} with lower endpoint
-\VThreeGraphHardAdaptiveLow{}.  The v3 audit fails if these lower endpoints are
+\VFourGraphAllAdaptiveGain{} with lower endpoint \VFourGraphAllAdaptiveLow{}.
+The hard-case gain is \VFourGraphHardAdaptiveGain{} with lower endpoint
+\VFourGraphHardAdaptiveLow{}.  The V4 audit fails if these lower endpoints are
 not positive.
 
 The exact-law validation is separate from the repair statistics.  It measures
 whether the finite-pool accounting matches empirical selected utility.  The
-mean absolute error \VThreeGraphExactError{} is small enough to use the law as
+mean absolute error \VFourGraphExactError{} is small enough to use the law as
 a diagnostic.  It does not prove that the graph score is good, calibrated, or
 safe.
 
@@ -582,10 +628,10 @@ artifact-level question: are the failure signals in this suite linearly
 recoverable enough to improve rank alignment?
 
 The answer is yes inside this artifact.  Raw score rank correlation is
-\VThreeGraphRawRank{}, while learned utility rank correlation is
-\VThreeGraphLearnedRank{}.  The learned-safe selector closes
-\VThreeGraphSafeGapClosed{} of the hard-case oracle gap.  Because the safe
-selector can still have negative deltas in a small fraction of cases, v3 avoids
+\VFourGraphRawRank{}, while learned utility rank correlation is
+\VFourGraphLearnedRank{}.  The learned-safe selector closes
+\VFourGraphSafeGapClosed{} of the hard-case oracle gap.  Because the safe
+selector can still have negative deltas in a small fraction of cases, V4 avoids
 safety language and reports it as calibration evidence.
 
 A reviewer could reasonably ask for a neural graph model trained from rollouts.
@@ -606,13 +652,13 @@ table gives paired deltas and confidence intervals.
 
 The figures are summaries, not evidence replacements.  Figure~\ref{fig:tail}
 is the narrative failure figure.  Figure~\ref{fig:stress} checks stress-grid
-coverage.  Figure~\ref{fig:repair} shows gating and oracle-gap closure.  The v3
+coverage.  Figure~\ref{fig:repair} shows gating and oracle-gap closure.  The V4
 figures make the audit surface explicit: matrix, repair deltas, learned
 calibration, claim boundaries, artifact inventory, and family robustness.
 
 The documents are guardrails.  The claims document tells a reviewer what the
 paper is and is not allowed to claim.  The final audit records which commands
-passed for v2.  V3 adds a stricter build/audit script that checks source-map
+passed for v2.  V4 adds a stricter build/audit script that checks source-map
 state, PDF hashes, page count, claim thresholds, and LaTeX blockers.
 
 The source package is small enough to inspect.  The graph-physics module defines
@@ -639,7 +685,7 @@ method and experiments.
 The finite law is allowed to recur as a technical instrument because it is a
 shared measurement lens.  The paper identity is not allowed to recur.  If future
 edits make the first theorem the only memorable contribution, the manuscript
-should be rejected by its own audit.  The v3 figures and appendix are designed
+should be rejected by its own audit.  The V4 figures and appendix are designed
 to prevent that by making graph constraints impossible to miss.
 
 \section{Area-Chair Decision Simulation}
@@ -652,32 +698,32 @@ repair evidence, and explicit non-claims.  The paper is useful as a diagnostic
 artifact.
 
 The likely reject argument is that no external benchmark or real-system data is
-present.  V3 cannot erase that weakness.  It can only make sure the weakness is
+present.  V4 cannot erase that weakness.  It can only make sure the weakness is
 correctly scoped and that the local evidence is strong enough to be worth
 reviewing.  A reviewer seeking benchmark novelty may still reject.  A reviewer
 valuing controlled mechanism and artifact discipline may accept.
 
-The desk-rejection risk is duplication.  V3 reduces it by moving the manuscript
+The desk-rejection risk is duplication.  V4 reduces it by moving the manuscript
 away from generic selection language and toward graph-specific stress design.
-The title, abstract, figures, v3 section, and appendix all use the graph object.
+The title, abstract, figures, V4 section, and appendix all use the graph object.
 The theorem is still present, but it is framed as the accountant of the selected
 tail, not the full contribution.
 
 \section{Resource and Reproducibility Policy}
 
 The expensive experiment path is intentionally separated from the manuscript
-build.  The bulletproof generation run records a long CPU-local runtime.  V3
+build.  The bulletproof generation run records a long CPU-local runtime.  V4
 does not force every fresh session to rerun that path before compiling the
 paper.  Instead, the cache script reads committed artifacts, generates compact
-v3 summaries and figures, and verifies that the manuscript uses fresh numbers.
+V4 summaries and figures, and verifies that the manuscript uses fresh numbers.
 
-This separation is important for RAM-light work.  The v3 cache streams ordinary
+This separation is important for RAM-light work.  The V4 cache streams ordinary
 CSV/JSON files and uses small matplotlib figures.  It does not allocate large
 simulator batches, train large models, or hold all candidate rollouts in memory.
 Full regeneration remains available through the existing scripts when a reviewer
 wants to rebuild the evidence from source.
 
-The final audit is stricter than a normal build.  It requires the v3 cache, the
+The final audit is stricter than a normal build.  It requires the V4 cache, the
 claim audit, the final repo PDF, the Desktop PDF, matching PDF hashes, at least
 25 pages, the exact Desktop source-map row, absence of the old Desktop v2 PDF,
 and a clean LaTeX blocker scan.  This is designed for future agents: they should
@@ -686,16 +732,16 @@ eligible.
 
 \section{Submission-Readiness Checklist}
 
-Before treating v3 as final, the following checks must pass:
+Before treating V4 as final, the following checks must pass:
 \begin{enumerate}
-\item Generate the v3 cache and figures.
-\item Build the v3 PDF into the repository final directory and the Desktop.
+\item Generate the V4 cache and figures.
+\item Build the V4 PDF into the repository final directory and the Desktop.
 \item Confirm the repo and Desktop PDF hashes match.
 \item Confirm the final PDF has at least 25 pages.
-\item Confirm the source map points to the v3 PDF, this folder, and the GitHub
+\item Confirm the source map points to the V4 PDF, this folder, and the GitHub
 repository.
 \item Run the original claim audit.
-\item Run the v3 claim audit.
+\item Run the V4 claim audit.
 \item Run the Python test suite.
 \item Check the LaTeX log for fatal errors, unresolved references, unresolved
 citations, and overfull boxes.
@@ -740,8 +786,8 @@ high utility and risky when high-score groups are constraint shadows.
 
 A fresh agent should be able to recover the final state without hidden context.
 The Desktop source map identifies the final PDF name, local folder, and GitHub
-repository.  The repository contains the v3 final PDF, the v3 build script, the
-v3 audit script, the v3 cache, generated v3 figures, and the original evidence
+repository.  The repository contains the V4 final PDF, the V4 build script, the
+V4 audit script, the V4 cache, generated V4 figures, and the original evidence
 artifacts.  The final PDF should not depend on transient local build files.
 
 The final manuscript must remain anonymous and scope-honest.  It should not
@@ -772,12 +818,12 @@ gate is pilot-label.  A deployable gate would need risk signals available at
 test time, thresholds fixed before evaluation, and evidence that it does not
 silently block useful high-\(N\) improvements.
 
-These extensions are deliberately left outside v3.  Adding them without enough
-evidence would weaken the paper by making it overclaim.  V3 is strongest when it
+These extensions are deliberately left outside V4.  Adding them without enough
+evidence would weaken the paper by making it overclaim.  V4 is strongest when it
 is precise: controlled graph constraint shadows, audited selected-tail repairs,
 and explicit boundaries.
 
-\section{V3 Extended Audit Notes}
+\section{V4 Extended Audit Notes}
 
 \subsection{Per-family threat models}
 
@@ -786,7 +832,7 @@ the imagined model plausible short paths through the state space.  If hidden
 constraints change which chord-like interactions matter, then the high-score
 future can satisfy the imagined shortcut while violating the true relation.  A
 raw selector is vulnerable because it sees the shortcut bonus and visible-edge
-energy, not the hidden edge cost.  The v3 matrix asks whether this vulnerability
+energy, not the hidden edge cost.  The V4 matrix asks whether this vulnerability
 is an isolated drawing of one graph or a repeated family-level behavior.
 
 The chain family is a propagation test.  Chains are simple, but long-range
@@ -860,8 +906,8 @@ them with failures induced by real learned dynamics.
 
 \subsection{Repair coefficient audit}
 
-Repair coefficients are fixed in the source package before the v3 manuscript is
-built.  V3 does not retune them to create a new story.  The coefficient audit is
+Repair coefficients are fixed in the source package before the V4 manuscript is
+built.  V4 does not retune them to create a new story.  The coefficient audit is
 therefore about interpretation.  Each penalty has a reason to exist, and each
 penalty has a scope boundary.
 
@@ -893,11 +939,11 @@ constraint-shadow diagnosis; it would identify a stronger repair target.
 \subsection{Alternative hypotheses}
 
 Alternative hypothesis one is random seed luck.  The evidence counters this by
-using seed-level selector rows and paired comparisons.  The v3 audit does not
+using seed-level selector rows and paired comparisons.  The V4 audit does not
 accept a single pretty trajectory.  It requires aggregate rows, hard-case rows,
 and positive paired intervals for the adaptive claims.
 
-Alternative hypothesis two is a one-family artifact.  The v3 family and matrix
+Alternative hypothesis two is a one-family artifact.  The V4 family and matrix
 figures counter this by crossing graph families and hidden-failure modes.  A
 reviewer should still inspect the cells: uneven strength across families is
 expected and informative.  The claim is cross-family coverage, not identical
@@ -911,7 +957,7 @@ to dominate; it needs the decomposition to be visible.
 
 Alternative hypothesis four is learned calibration leakage.  The learned-lite
 model uses synthetic features and condition labels, so the concern is valid for
-external claims.  V3 handles this by narrowing the claim to held-out synthetic
+external claims.  V4 handles this by narrowing the claim to held-out synthetic
 rank alignment and by refusing to call the learned-lite result a general learned
 world model.
 
@@ -928,8 +974,8 @@ benchmark; it is an analysis subset that asks where repair matters most.  If
 raw selection already matches oracle utility, a repair cannot show much gain.
 Hard cases therefore prevent the average from being diluted by easy conditions.
 
-The hard-case adaptive gain is \VThreeGraphHardAdaptiveGain{} with interval
-[\VThreeGraphHardAdaptiveLow{}, \VThreeGraphHardAdaptiveHigh{}].  This is the
+The hard-case adaptive gain is \VFourGraphHardAdaptiveGain{} with interval
+[\VFourGraphHardAdaptiveLow{}, \VFourGraphHardAdaptiveHigh{}].  This is the
 strongest repair number in the manuscript because it focuses on failures that
 actually need a repair.  The all-case number remains necessary because a repair
 that helps hard cases by damaging easy cases would not be acceptable.
@@ -957,7 +1003,7 @@ failure may be difficult to diagnose from available signals.
 
 This protocol is important because it stops the paper from treating aggregate
 gain as magic.  A reviewer should be able to move from a table row to a
-mechanistic explanation.  V3 does not include every row-level walkthrough in the
+mechanistic explanation.  V4 does not include every row-level walkthrough in the
 main text, but the appendix states the method and the repository exposes the
 tables needed for inspection.
 
@@ -977,20 +1023,20 @@ claim.  It shows whether adaptive gating and repair close oracle gaps under the
 same synthetic evidence.  It should be paired with the caveat that the gate uses
 pilot-label information.
 
-Figure~\ref{fig:v3-shadow} is the v3 identity figure.  It is where the paper
+Figure~\ref{fig:V4-shadow} is the V4 identity figure.  It is where the paper
 visibly differs from a generic selected-tail paper.  A reviewer comparing
 manuscripts side by side should see graph families and hidden failures here, not
 an interchangeable selection plot.
 
-Figure~\ref{fig:v3-repair-gate} is the v3 statistical figure.  It separates all
+Figure~\ref{fig:V4-repair-gate} is the V4 statistical figure.  It separates all
 cases from hard cases and compares combined repair, adaptive gate, and oracle.
 This prevents the paper from hiding which subset drives the strongest result.
 
-Figure~\ref{fig:v3-learned} is the calibration figure.  Its job is narrow:
+Figure~\ref{fig:V4-learned} is the calibration figure.  Its job is narrow:
 demonstrate held-out rank alignment and selected-utility movement for the
 learned-safe rule.  It does not promote a learned simulator claim.
 
-Figure~\ref{fig:v3-boundaries} and Figure~\ref{fig:v3-family} are audit figures.
+Figure~\ref{fig:V4-boundaries} and Figure~\ref{fig:V4-family} are audit figures.
 They exist to make claim boundaries, artifacts, and family robustness visible.
 They are not decorative and should remain in the final version unless replaced
 by stronger graph-specific audits.
@@ -999,17 +1045,17 @@ by stronger graph-specific audits.
 
 Table~\ref{tab:headline} is the compact headline table.  It must remain
 consistent with the generated CSV/JSON artifacts.  If any headline number is
-edited manually, the paper becomes less trustworthy.  V3 therefore adds macros
+edited manually, the paper becomes less trustworthy.  V4 therefore adds macros
 for the new audit values and checks the generated summary.
 
-Table~\ref{tab:v3-audit-surface} is a freshness table.  Its purpose is to show
-that v3 is tied to the current artifact package.  It reports the supported
+Table~\ref{tab:V4-audit-surface} is a freshness table.  Its purpose is to show
+that V4 is tied to the current artifact package.  It reports the supported
 claims, unsupported boundaries, condition counts, row counts, exact-law error,
 and generated figures.  It is not a substitute for the result tables; it is a
 reader-facing manifest.
 
 A possible future table would list every graph-family by hidden-failure cell.
-V3 uses a figure instead because the matrix is easier to inspect visually.  The
+V4 uses a figure instead because the matrix is easier to inspect visually.  The
 CSV is still written by the cache script so a reviewer can audit exact values.
 
 \subsection{Claim wording rules}
@@ -1035,7 +1081,7 @@ Use ``combined repair'' and ``adaptive gate'' for scoped controls.
 
 \subsection{Audit script contract}
 
-The v3 audit script is intentionally strict.  It regenerates v3 cached evidence
+The V4 audit script is intentionally strict.  It regenerates V4 cached evidence
 and runs the existing claim audit.  It checks supported and unsupported claim
 counts, condition counts, row counts, hard-case counts, exact-law error,
 adaptive and repair gains, learned calibration, family coverage, hidden-failure
@@ -1045,7 +1091,7 @@ counts.
 The script also checks the final PDF as an artifact.  It requires the repository
 final PDF and the Desktop PDF to exist and have identical SHA-256 hashes.  It
 requires at least 25 pages.  It requires the old Desktop v2 PDF to be absent.  It
-requires the Desktop source map to point to the v3 PDF, this local folder, and
+requires the Desktop source map to point to the V4 PDF, this local folder, and
 the GitHub repository.
 
 Finally, the script checks the LaTeX log.  Fatal errors, emergency stops,
@@ -1059,16 +1105,16 @@ warnings.
 The Desktop source map is part of the workflow, not a note to self.  Future
 sessions start from the visible Desktop PDFs and need to find the correct local
 folder and GitHub repository immediately.  For this paper, the final source-map
-row must name the v3 PDF, the local graph world model folder, and the
+row must name the V4 PDF, the local graph world model folder, and the
 graph-world-model GitHub repository.
 
 The source map is outside the repository, so the Git commit cannot protect it.
-That is why the v3 audit script reads it directly.  A pushed repo without a
+That is why the V4 audit script reads it directly.  A pushed repo without a
 correct Desktop row would still fail the workflow because a fresh agent could
 pick up the wrong PDF.
 
 The old Desktop v2 file should be absent after finalization.  Keeping both v2
-and v3 visible makes it too easy for a future session to open the wrong paper.
+and V4 visible makes it too easy for a future session to open the wrong paper.
 The final paper must be the only eligible graph world model PDF on the Desktop.
 
 \subsection{Comparison to a full external benchmark paper}
@@ -1100,7 +1146,7 @@ ask for better external validation, but may accept the paper as a diagnostic
 artifact.
 
 A reviewer who values benchmark scale may give a borderline or negative score:
-the paper lacks external physics benchmarks and real robots.  V3 cannot fully
+the paper lacks external physics benchmarks and real robots.  V4 cannot fully
 answer that.  The rebuttal should not pretend otherwise.  It should point to
 the controlled mechanism and explain that external validation is future work.
 
@@ -1110,13 +1156,13 @@ graph calibration, and family/failure matrices.  The finite law is shared
 support, but the paper is not a wrapper around the law.
 
 A reviewer who worries about overclaiming should find the paper unusually easy
-to audit.  Unsupported claims are explicit.  The v3 audit enforces them.  The
+to audit.  Unsupported claims are explicit.  The V4 audit enforces them.  The
 limitation section is not defensive; it is part of the paper's correctness.
 
 \subsection{Camera-ready risk register}
 
 Risk one is page pressure.  If a future venue imposes a shorter main paper, the
-appendix can carry most v3 audit content.  The graph-specific main section and
+appendix can carry most V4 audit content.  The graph-specific main section and
 figures should remain because they prevent duplicate-wrapper perception.
 
 Risk two is dependency drift.  The current build uses MiKTeX and standard
@@ -1124,7 +1170,7 @@ Python packages already used by the repository.  The cache is deterministic, but
 external TeX installations can still differ.  The final PDF is committed so a
 fresh session has an exact artifact even if local TeX changes.
 
-Risk three is stale evidence.  If experiments are regenerated, the v3 cache and
+Risk three is stale evidence.  If experiments are regenerated, the V4 cache and
 manuscript must be rebuilt before submission.  The audit script catches many
 stale-number failures by reading generated summaries and checking the final PDF
 hash path, but authors should still inspect changed tables.
@@ -1141,7 +1187,7 @@ failure in which imagined visible constraints differ from true constraints and
 high-score selection concentrates on the wrong tail.
 
 Artifact rigor: strong inside the stated scope.  The repository contains source,
-tests, generated tables, figures, claim maps, audits, and a final PDF.  The v3
+tests, generated tables, figures, claim maps, audits, and a final PDF.  The V4
 cache makes the evidence easier to inspect without rerunning the expensive path.
 
 Empirical scope: moderate.  The local synthetic suite is broad enough for a
@@ -1152,7 +1198,7 @@ Statistical reporting: solid.  The paper reports paired deltas, confidence
 intervals, hard-case subsets, exact-law error, and learned held-out alignment.
 It should not be scored as a massive empirical benchmark.
 
-Novel identity: strong after v3.  The constraint-shadow framing, graph family
+Novel identity: strong after V4.  The constraint-shadow framing, graph family
 audit, hidden-failure taxonomy, and graph-specific repair signals make the paper
 recognizable without relying on the generic finite law.
 
@@ -1165,7 +1211,7 @@ prevents reviewers from having to infer the boundaries.
 If a reviewer asks for real robots, the response should be: the paper agrees
 that real-system validation is absent and does not claim it.  The contribution
 is a controlled graph constraint-shadow audit.  We have clarified this in the
-abstract, limitations, claim audit, and v3 evidence section.
+abstract, limitations, claim audit, and V4 evidence section.
 
 If a reviewer says the theorem is generic, the response should be: yes, the
 finite law is the accounting tool.  The paper's graph-specific contribution is
@@ -1199,7 +1245,7 @@ budgets.  This layer is expensive relative to normal manuscript compilation, so
 it is intentionally run only when regenerating the evidence.
 
 The second layer is verification.  Verification reads the generated artifacts
-and asks whether the claims still hold.  The v3 cache belongs to this layer.  It
+and asks whether the claims still hold.  The V4 cache belongs to this layer.  It
 does not create new graph worlds; it reads the committed tables and builds
 summary artifacts that a reviewer can inspect quickly.  This distinction matters
 because it lets the paper be both strong and practical: full regeneration is
@@ -1211,12 +1257,12 @@ adaptive gate were evaluated on different candidate pools, selected utility
 deltas would mix selector effects with sampling noise.  The paired statistical
 table is therefore one of the most important artifacts in the repository.
 
-The stress grid is generated before looking at v3 figures.  V3 summarizes the
+The stress grid is generated before looking at V4 figures.  V4 summarizes the
 grid; it does not choose the grid.  This is important for avoiding hindsight
-cherry-picking.  The v3 matrix can reveal uneven or weak cells, but it should not
+cherry-picking.  The V4 matrix can reveal uneven or weak cells, but it should not
 alter which families or hidden failures are included.
 
-The learned-lite train/test protocol is also fixed before v3 summary.  Its
+The learned-lite train/test protocol is also fixed before V4 summary.  Its
 purpose is not to win a benchmark but to ask whether candidate features contain
 enough information to improve utility ranking on held-out synthetic rows.  The
 safe selector threshold is part of that artifact and should not be retuned
@@ -1259,7 +1305,7 @@ learned model should be tested with; it does not prove learned-model behavior.
 
 The third open question is adaptive threshold transfer.  The gate's thresholds
 are defined inside the synthetic suite.  It is unknown whether they transfer to
-new graph families or real systems.  V3 therefore treats the gate as evidence
+new graph families or real systems.  V4 therefore treats the gate as evidence
 that selected-tail risk can be acted on when labels or probes exist, not as a
 universal gate.
 
@@ -1273,7 +1319,7 @@ relational structure but do not include perception, object identity uncertainty,
 contact discontinuities, or actuator delays from real robotics.  Those would
 make the problem richer and would require new evidence.
 
-\subsection{Why v3 does not rerun bulletproof on every build}
+\subsection{Why V4 does not rerun bulletproof on every build}
 
 A naive submission workflow might rerun the full generator every time the paper
 is compiled.  That would be expensive and unnecessary.  The full generation path
@@ -1281,7 +1327,7 @@ is for regenerating evidence.  The build path is for checking that the current
 evidence is correctly represented in the paper.  Conflating the two makes the
 workflow slower without making the final PDF more trustworthy.
 
-V3 therefore uses a cache generator that is deterministic and small.  It reads
+V4 therefore uses a cache generator that is deterministic and small.  It reads
 the existing tables, writes summaries, writes figures, and exports macros.  If
 the underlying evidence changes, the cache changes.  If the evidence is stable,
 the cache is stable.  This is exactly the behavior needed for a submission
@@ -1314,8 +1360,8 @@ cannot claim results there.
 \subsection{Adversarial reading order}
 
 An adversarial reviewer should read the abstract first and check whether it
-overclaims.  Then they should inspect Table~\ref{tab:v3-audit-surface} to see
-the evidence surface.  Then they should inspect Figure~\ref{fig:v3-shadow} to
+overclaims.  Then they should inspect Table~\ref{tab:V4-audit-surface} to see
+the evidence surface.  Then they should inspect Figure~\ref{fig:V4-shadow} to
 decide whether the graph constraint-shadow identity is visible.  Then they
 should inspect the claim audit and limitations to see whether unsupported claims
 are explicit.
@@ -1326,7 +1372,7 @@ the graph evidence comes first, the theorem becomes a useful accounting tool.
 
 Finally, the reviewer should run the audit commands.  A paper package that
 cannot rebuild its PDF, regenerate its summaries, pass its tests, and verify its
-claim map is not submission-ready.  V3 treats those operational checks as part
+claim map is not submission-ready.  V4 treats those operational checks as part
 of the scholarly artifact.
 
 \subsection{Open-review questions and traceability}
@@ -1341,7 +1387,7 @@ metrics and predictions.  C6 traces to the stress grid and run summary.  If a
 claim cannot be traced this way, it should not be supported.
 
 A second open-review question is whether the synthetic mechanism is still
-interesting after all caveats are applied.  V3's answer is yes: graph world
+interesting after all caveats are applied.  V4's answer is yes: graph world
 models are often trusted because relational structure appears physically
 meaningful, but a relational score can still hide missing constraints.  The
 paper gives a compact way to audit that risk.  The caveats reduce external
@@ -1355,13 +1401,13 @@ do not match the true evaluator.  If a reviewer dislikes the phrase, the data
 and claim boundaries remain.
 
 A fourth question is whether the repair evidence should be in the main
-contribution.  V3 keeps it because a failure-only paper is easier to dismiss as
+contribution.  V4 keeps it because a failure-only paper is easier to dismiss as
 diagnostic but not actionable.  The repair evidence shows that visible graph
 features, calibration gaps, and pilot labels can reduce selected-tail mismatch.
 The paper still keeps the repair claim smaller than the failure claim because
 the controls are engineered for the synthetic suite.
 
-A fifth question is whether the artifact is too complex for the claim.  V3's
+A fifth question is whether the artifact is too complex for the claim.  V4's
 answer is that complexity is mostly in auditability.  The core mechanism is
 simple, but the repository includes enough tables, figures, scripts, and claim
 maps to make the mechanism hard to misread.  That is a feature for submission:
@@ -1396,7 +1442,7 @@ if a reviewer distrusts the adaptive gate.  The repair claim should be scoped to
 paired synthetic high-\(N\) evidence and should not carry the whole paper.
 
 The fourth rejection is ``artifact not reproducible.''  The correct response is
-operational: run the v3 build, v3 audit, claim audit, tests, determinism checks,
+operational: run the V4 build, V4 audit, claim audit, tests, determinism checks,
 visual render checks, and GitHub remote verification.  If any fails, the paper
 is not final.  Submission readiness is not a feeling; it is a set of artifacts
 that agree with each other.
@@ -1404,10 +1450,10 @@ that agree with each other.
 \subsection{Final acceptance conditions}
 
 The graph paper is final only if the following are simultaneously true.  First,
-the PDF is at least 25 pages and contains graph-specific v3 content rather than
-padding.  Second, the source map points to the v3 PDF and correct repository.
+the PDF is at least 25 pages and contains graph-specific V4 content rather than
+padding.  Second, the source map points to the V4 PDF and correct repository.
 Third, the repo and Desktop PDFs are identical.  Fourth, the old Desktop v2 PDF
-is absent.  Fifth, tests and claim audits pass.  Sixth, generated v3 evidence is
+is absent.  Fifth, tests and claim audits pass.  Sixth, generated V4 evidence is
 deterministic.  Seventh, representative rendered pages look correct.  Eighth,
 the GitHub branch contains the final commit.
 
@@ -1419,5 +1465,26 @@ single submission package.
 \section{LLM Usage Statement}
 
 This draft manuscript was prepared with assistance from an LLM-based coding and writing agent under user direction.  The agent was instructed to restrict claims to existing repository artifacts, cite only verified references, and preserve the synthetic scope of the evidence.  Authors remain responsible for independently checking the manuscript, bibliography, generated PDF, and all submission metadata before any conference submission.
+
+\section{Operational Rebuild Commands}
+
+The anonymous submission PDF can be rebuilt from the repository root with:
+\begin{center}
+\small
+\texttt{python scripts/build\_v4\_paper.py}
+\end{center}
+The final package audit is:
+\begin{center}
+\small
+\texttt{python scripts/run\_v4\_claim\_audit.py}
+\end{center}
+The unit tests are:
+\begin{center}
+\small
+\texttt{python -m pytest -q}
+\end{center}
+These commands intentionally reuse the committed CSV, JSON, and figure artifacts
+for low-RAM verification.  The expensive synthetic generator remains available,
+but it is not required for rebuilding or auditing the submitted PDF.
 
 \end{document}

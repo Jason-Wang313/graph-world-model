@@ -40,15 +40,27 @@ pytest
 ## ICLR Paper Build
 
 ```bash
-bash scripts/build_paper.sh
+python scripts/build_v4_paper.py
+python scripts/run_v4_claim_audit.py
+python -m pytest -q
 ```
 
-The command runs `latexmk -pdf -interaction=nonstopmode -halt-on-error main.tex` from `paper/iclr` when available, with a `pdflatex`/BibTeX fallback for MiKTeX environments where `latexmk` cannot start. It writes the local PDF to `paper/iclr/main.pdf`.
+The v4 builder regenerates the low-RAM evidence cache, runs the claim audit, compiles the ICLR PDF, writes `paper/final/graph world model-v4.pdf`, copies the same PDF to the Desktop, and removes stale v2/v3 Desktop copies. The final audit checks hashes, source-map routing, claim gates, generated figures, page count, and LaTeX blockers.
+
+## Final V4 Package
+
+- Final PDF: `paper/final/graph world model-v4.pdf` and Desktop `graph world model-v4.pdf`.
+- V4 cache: `results/v4_frozen_evidence/`.
+- V4 figures: `results/figures/v4/`.
+- Claim gates: `10/10` pass.
+- Benchmark protocol bridge: `5` recognized graph-dynamics probe rows, `5` pass rows.
+- Aggregate stress gates: adaptive gating is non-worse in `75/75` cell-level stress rows.
+- Supported/unsupported ledger: `7` supported claims and `4` explicit unsupported boundaries.
 
 ## Claim Discipline
 
-- Supported: finite tie-aware law, selected-tail failure in synthetic graph physics, repair/gate improvements inside the stress suite, learned-lite held-out calibration, and multi-family synthetic coverage.
-- Unsupported: real-robot validation, broad external benchmark superiority, state-of-the-art performance, universal improvement from increasing `N`, and deployment safety beyond the controlled synthetic setting.
+- Supported: finite tie-aware law, selected-tail failure in synthetic graph physics, repair/gate improvements inside the stress suite, learned-lite held-out calibration, multi-family synthetic coverage, and v4 recognized graph-dynamics probe rows.
+- Unsupported: real-robot validation, broad external-dataset superiority, reproduced SOTA performance, universal improvement from increasing `N`, and deployment safety beyond the controlled synthetic setting.
 - Audit: `bash scripts/run_claim_audit.sh` regenerates claim status and fails on missing required artifacts or forbidden supported overclaims.
 
 ## Headline Bulletproof Results
@@ -60,7 +72,8 @@ The command runs `latexmk -pdf -interaction=nonstopmode -halt-on-error main.tex`
 - Adaptive gate high-`N` negative deltas versus raw: `0`.
 - Learned-lite rank correlation improves from `0.756` to `0.932`.
 - Learned-safe calibration closes `0.588` of the hard-case oracle gap.
+- V4 claim gates: `10/10`; benchmark-protocol pass rows: `5/5`; adaptive non-worse stress cells: `75/75`.
 
 ## Scope
 
-This is a controlled synthetic graph-physics paper package. It is not a real-robot result, not an external physics-engine benchmark, not a state-of-the-art claim, and not evidence that larger `N` universally helps. Within the stated CPU-synthetic scope, the package is designed to leave no obvious meaningful improvement before moving to external benchmarks or real-system data.
+This is a controlled synthetic graph-physics paper package. V4 adds recognized graph-dynamics protocol probes, but it is still not a real-robot result, not an external held-out dataset result, not a reproduced SOTA claim, and not evidence that larger `N` universally helps. Within the stated CPU-synthetic scope, the package is designed to leave no obvious meaningful improvement before moving to external benchmarks or real-system data.

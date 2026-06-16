@@ -11,8 +11,9 @@ ROOT = Path(__file__).resolve().parents[1]
 PAPER_DIR = ROOT / "paper" / "iclr"
 BUILD_DIR = PAPER_DIR / "build"
 FINAL_DIR = ROOT / "paper" / "final"
-FINAL_PDF = FINAL_DIR / "graph world model-v3.pdf"
-DESKTOP_PDF = Path.home() / "OneDrive" / "Desktop" / "graph world model-v3.pdf"
+FINAL_PDF = FINAL_DIR / "graph world model-v4.pdf"
+DESKTOP_PDF = Path.home() / "OneDrive" / "Desktop" / "graph world model-v4.pdf"
+STALE_FINAL_NAMES = ["graph world model-v3.pdf", "graph world model-v2.pdf"]
 
 
 def run(cmd: list[str], cwd: Path, env: dict[str, str]) -> None:
@@ -20,8 +21,19 @@ def run(cmd: list[str], cwd: Path, env: dict[str, str]) -> None:
     subprocess.run(cmd, cwd=cwd, env=env, check=True)
 
 
+def clean_stale_pdfs() -> None:
+    for directory in [FINAL_DIR, DESKTOP_PDF.parent]:
+        for name in STALE_FINAL_NAMES:
+            path = directory / name
+            if path.exists():
+                path.unlink()
+
+
 def main() -> int:
-    run([sys.executable, "experiments/v3_cached_evidence.py"], ROOT, os.environ.copy())
+    clean_stale_pdfs()
+    run([sys.executable, "experiments/v4_frozen_evidence.py"], ROOT, os.environ.copy())
+    run(["bash", "scripts/run_claim_audit.sh"], ROOT, os.environ.copy())
+    run([sys.executable, "experiments/v4_frozen_evidence.py"], ROOT, os.environ.copy())
 
     if BUILD_DIR.exists():
         shutil.rmtree(BUILD_DIR)
@@ -56,6 +68,7 @@ def main() -> int:
     DESKTOP_PDF.parent.mkdir(parents=True, exist_ok=True)
     shutil.copy2(built, FINAL_PDF)
     shutil.copy2(built, DESKTOP_PDF)
+    clean_stale_pdfs()
     print(f"Repo PDF: {FINAL_PDF}")
     print(f"Desktop PDF: {DESKTOP_PDF}")
     return 0

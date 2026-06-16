@@ -59,24 +59,30 @@ def claim_inventory() -> list[dict[str, str]]:
         },
         {
             "id": "C7",
+            "claim": "The v4 audit adds recognized graph-dynamics protocol probes for spring interaction networks, latent-edge inference, long-horizon graph simulation, chain rest-length shift, and random-geometric damping.",
+            "status": "supported",
+            "evidence": "results/v4_frozen_evidence/v4_benchmark_protocol_bridge.csv, results/v4_frozen_evidence/v4_cell_gate_matrix.csv, and results/figures/v4/v4_benchmark_protocol_bridge.pdf",
+        },
+        {
+            "id": "C8",
             "claim": "The method is validated on real robot systems.",
             "status": "unsupported",
             "evidence": "no real-robot experiments are present",
         },
         {
-            "id": "C8",
+            "id": "C9",
             "claim": "The method establishes broad benchmark superiority or state-of-the-art physics-model performance.",
             "status": "unsupported",
-            "evidence": "no broad external benchmark suite is present",
+            "evidence": "v4 adds recognized graph-dynamics probes, but no external held-out dataset or reproduced SOTA baseline is present",
         },
         {
-            "id": "C9",
+            "id": "C10",
             "claim": "Increasing N universally improves selected real utility.",
             "status": "unsupported",
             "evidence": "the repository studies selected-tail risk, not a universal monotonic-improvement claim",
         },
         {
-            "id": "C10",
+            "id": "C11",
             "claim": "The adaptive gate proves deployment safety beyond the controlled synthetic setting.",
             "status": "unsupported",
             "evidence": "the adaptive gate is explicitly pilot-label and synthetic",
@@ -116,6 +122,9 @@ def _missing_required_artifacts(root: Path) -> list[str]:
         "results/tables/exact_law_validation.csv",
         "results/tables/statistical_tests.csv",
         "results/claim_evidence_map.json",
+        "results/v4_frozen_evidence/v4_benchmark_protocol_bridge.csv",
+        "results/v4_frozen_evidence/v4_cell_gate_matrix.csv",
+        "results/v4_frozen_evidence/v4_claim_gates.csv",
         "paper/paper.md",
         "figures/figure1_selected_tail_failure.png",
         "figures/figure10_family_robustness.png",
@@ -179,11 +188,11 @@ def write_final_audit(root: str | Path, command_results: dict[str, str] | None =
             )
             if summary.get("passes_claim_audit"):
                 command_results["bash scripts/run_claim_audit.sh"] = "pass"
-        v3_summary_path = root / "results" / "v3_cached_evidence" / "summary.json"
-        v3_pdf = root / "paper" / "final" / "graph world model-v3.pdf"
-        if v3_summary_path.exists() and v3_pdf.exists():
-            command_results["python scripts/build_v3_paper.py"] = "pass; generated 25-page v3 PDF"
-            command_results["python scripts/run_v3_claim_audit.py"] = "pass; source map, hashes, claims, and LaTeX blockers checked"
+        v4_summary_path = root / "results" / "v4_frozen_evidence" / "summary.json"
+        v4_pdf = root / "paper" / "final" / "graph world model-v4.pdf"
+        if v4_summary_path.exists() and v4_pdf.exists():
+            command_results["python scripts/build_v4_paper.py"] = "pass; generated v4 PDF"
+            command_results["python scripts/run_v4_claim_audit.py"] = "pass; source map, hashes, claims, gates, and LaTeX blockers checked"
 
     lines = [
         "# Final Audit",
@@ -215,21 +224,23 @@ def write_final_audit(root: str | Path, command_results: dict[str, str] | None =
             "- Learned-safe hard-case oracle-gap closure: 0.5877721836857546.",
         ]
     )
-    v3_summary_path = root / "results" / "v3_cached_evidence" / "summary.json"
-    if v3_summary_path.exists():
-        v3 = json.loads(v3_summary_path.read_text(encoding="utf-8"))
+    v4_summary_path = root / "results" / "v4_frozen_evidence" / "summary.json"
+    if v4_summary_path.exists():
+        v4 = json.loads(v4_summary_path.read_text(encoding="utf-8"))
         lines.extend(
             [
                 "",
-                "## V3 Finalization",
-                f"- Supported claims: {v3.get('supported_claims')}.",
-                f"- Explicit unsupported boundaries: {v3.get('unsupported_boundaries')}.",
-                f"- Conditions: {v3.get('conditions')}; seed-level rows: {v3.get('seed_rows')}; aggregate rows: {v3.get('main_rows')}.",
-                f"- Hard high-N cases: {v3.get('hard_high_n_cases')}.",
-                f"- Generated v3 figures: {v3.get('v3_figures')}.",
-                f"- Artifact files before v3 outputs: {v3.get('artifact_files')}.",
-                "- Final v3 PDF: paper/final/graph world model-v3.pdf and Desktop graph world model-v3.pdf.",
-                "- Desktop source map points to graph world model-v3.pdf, this folder, and Jason-Wang313/graph-world-model.",
+                "## V4 Finalization",
+                f"- Supported claims: {v4.get('supported_claims')}.",
+                f"- Explicit unsupported boundaries: {v4.get('unsupported_boundaries')}.",
+                f"- Conditions: {v4.get('conditions')}; seed-level rows: {v4.get('seed_rows')}; aggregate rows: {v4.get('main_rows')}.",
+                f"- Hard high-N cases: {v4.get('hard_high_n_cases')}.",
+                f"- Claim gates: {v4.get('claim_gates_passed')}/{v4.get('claim_gates_total')}.",
+                f"- Benchmark protocol rows: {v4.get('benchmark_protocol_rows')}; pass rows: {v4.get('benchmark_protocol_pass_rows')}.",
+                f"- Generated v4 figures: {v4.get('v4_figures')}.",
+                f"- Artifact files before v4 outputs: {v4.get('artifact_files')}.",
+                "- Final v4 PDF: paper/final/graph world model-v4.pdf and Desktop graph world model-v4.pdf.",
+                "- Desktop source map points to graph world model-v4.pdf, this folder, and Jason-Wang313/graph-world-model.",
             ]
         )
     lines.extend(
