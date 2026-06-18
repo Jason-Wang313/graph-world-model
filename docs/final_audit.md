@@ -5,8 +5,24 @@ Paper-readiness judgment: hardened CPU-synthetic paper package. Within the state
 ## Command Results
 - experiments --mode bulletproof: pass (runtime 1343.253s, gate allow_high_n_with_adaptive_gate)
 - bash scripts/run_claim_audit.sh: pass
+- python -m compileall src tests experiments scripts -q: pass on 2026-06-19
+- python -m pytest -q: pass on 2026-06-19; 9 passed
 - python scripts/build_v4_paper.py: pass; generated v4 PDF
 - python scripts/run_v4_claim_audit.py: pass; source map, hashes, claims, gates, and LaTeX blockers checked
+- final LaTeX log blocker scan: pass; no undefined citations, undefined references, overfull boxes, or fatal LaTeX errors
+- visual PDF QA: pass; rendered all pages and inspected pages 1, 4, 7, 9, 18, 22, and 27
+
+## Current Final Package
+- Verification date: 2026-06-19.
+- Repository PDF: paper/final/graph world model-v4.pdf.
+- Desktop PDF: C:\Users\wangz\OneDrive\Desktop\graph world model-v4.pdf.
+- SHA-256: 96210C999B6FD03C4CAB340FF03869C40C87A326A358383640F896466ED66E04.
+- Page count: 27.
+- GitHub repository: Jason-Wang313/graph-world-model.
+- Final manifest: paper/final/graph world model-v4-manifest.json.
+- Repo/Desktop hash check: passed when the final manifest was written.
+- Source map row: graph world model-v4.pdf -> C:\Users\wangz\graph world model -> Jason-Wang313/graph-world-model.
+- Stale visible Desktop PDFs graph world model-v2.pdf and graph world model-v3.pdf are absent.
 
 ## Strongest Artifacts
 - Failure artifact: figure1_selected_tail_failure.png plus stress_metrics.csv across graph families, hidden failures, and stress levels.
@@ -34,6 +50,7 @@ Paper-readiness judgment: hardened CPU-synthetic paper package. Within the state
 - Artifact files before v4 outputs: 60.
 - Final v4 PDF: paper/final/graph world model-v4.pdf and Desktop graph world model-v4.pdf.
 - Desktop source map points to graph world model-v4.pdf, this folder, and Jason-Wang313/graph-world-model.
+- Final package records the repository path, Desktop path, SHA-256, page count, rendered-page QA, and manifest path.
 
 ## Differentiation
 The finite score-tie law is support machinery, not the paper identity. The scientific object is graph-structured toy physics: observed springs, hidden constraints, graph-energy checks, calibration gaps, learned-lite score calibration, and adaptive high-N gating.

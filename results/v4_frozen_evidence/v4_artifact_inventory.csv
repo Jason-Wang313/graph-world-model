@@ -2,7 +2,7 @@ path,category,bytes
 .gitattributes,other,13
 .gitignore,other,295
 docs/claims.md,doc,4209
-docs/final_audit.md,doc,3957
+docs/final_audit.md,doc,5114
 experiments/run_experiments.py,other,27542
 experiments/v4_frozen_evidence.py,other,31395
 figures/figure10_family_robustness.png,figure,45213
@@ -19,7 +19,7 @@ paper/abstract.md,paper,911
 paper/iclr/fancyhdr.sty,paper,20513
 paper/iclr/iclr2026_conference.bst,paper,26972
 paper/iclr/iclr2026_conference.sty,paper,9025
-paper/iclr/main.tex,paper,87139
+paper/iclr/main.tex,paper,87135
 paper/iclr/math_commands.tex,paper,12284
 paper/iclr/natbib.sty,paper,45150
 paper/iclr/references.bib,paper,6969
@@ -49,7 +49,7 @@ scripts/run_claim_audit.sh,script,889
 scripts/run_smoke.sh,script,1010
 scripts/run_v4_claim_audit.py,script,6139
 src/graph_constraint_tail_audit/__init__.py,source,258
-src/graph_constraint_tail_audit/audit.py,source,14069
+src/graph_constraint_tail_audit/audit.py,source,16510
 src/graph_constraint_tail_audit/graph_physics.py,source,15797
 src/graph_constraint_tail_audit/learned_model.py,source,7993
 src/graph_constraint_tail_audit/selection.py,source,6149
