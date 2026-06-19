@@ -10,13 +10,15 @@ Paper-readiness judgment: hardened CPU-synthetic paper package. Within the state
 - python scripts/build_v4_paper.py: pass; generated v4 PDF
 - python scripts/run_v4_claim_audit.py: pass; source map, hashes, claims, gates, and LaTeX blockers checked
 - final LaTeX log blocker scan: pass; no undefined citations, undefined references, overfull boxes, or fatal LaTeX errors
-- visual PDF QA: pass; rendered all pages and inspected pages 1, 4, 7, 9, 18, 22, and 27
+- boxed-link rebuild from frozen artifacts: pass; repository and Desktop PDFs match
+- PDF annotation link audit: pass; 74 annotations with 31 green citation boxes, 19 red internal-reference boxes, and 24 cyan URL/file boxes, all using 1pt visible borders
+- visual PDF QA: pass; rendered selected high-risk pages 1, 2, 3, 5, 9, 10, 11, 15, 20, 21, 25, and 27 at moderate DPI
 
 ## Current Final Package
 - Verification date: 2026-06-19.
 - Repository PDF: paper/final/graph world model-v4.pdf.
 - Desktop PDF: C:\Users\wangz\OneDrive\Desktop\graph world model-v4.pdf.
-- SHA-256: 96210C999B6FD03C4CAB340FF03869C40C87A326A358383640F896466ED66E04.
+- SHA-256: 89DDDB261E01ACAA8705B9AF117F496584500D7C398DE5C95F623780DB6B5EF4.
 - Page count: 27.
 - GitHub repository: Jason-Wang313/graph-world-model.
 - Final manifest: paper/final/graph world model-v4-manifest.json.

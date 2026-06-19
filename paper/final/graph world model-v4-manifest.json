@@ -4,7 +4,7 @@
   "github_remote": "https://github.com/Jason-Wang313/graph-world-model.git",
   "repository_pdf": "paper/final/graph world model-v4.pdf",
   "desktop_pdf": "C:\\Users\\wangz\\OneDrive\\Desktop\\graph world model-v4.pdf",
-  "sha256": "96210C999B6FD03C4CAB340FF03869C40C87A326A358383640F896466ED66E04",
+  "sha256": "89DDDB261E01ACAA8705B9AF117F496584500D7C398DE5C95F623780DB6B5EF4",
   "pages": 27,
   "verified_on": "2026-06-19",
   "checks": {
@@ -14,9 +14,11 @@
     "paper_build": "passed",
     "claim_audit": "graph world model v4 audit passed",
     "latex_final_log_scan": "passed",
+    "boxed_link_rebuild_from_frozen_artifacts": "passed",
+    "pdf_annotation_link_audit": "74 annotations: 31 green citation boxes, 19 red internal-reference boxes, 24 cyan URL/file boxes; all use 1pt visible borders",
     "repo_desktop_hash_match": true,
-    "pdf_render": "all 27 pages rendered",
-    "visual_qa": "pages 1, 4, 7, 9, 18, 22, and 27 inspected"
+    "pdf_render": "selected high-risk pages rendered at moderate DPI",
+    "visual_qa": "pages 1, 2, 3, 5, 9, 10, 11, 15, 20, 21, 25, and 27 inspected"
   },
   "evidence_summary": {
     "adaptive_nonworse_cells": 75,
